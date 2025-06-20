@@ -1,0 +1,47 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+/* 示例 alert.scss */
+.alert {
+  padding: $alert-padding-y $alert-padding-x;
+  border-radius: $alert-border-radius;
+  font-size: 14px;
+  color: #333;
+  background-color: $white;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  .Alert-text {
+    strong {
+      font-weight: bold;
+    }
+    p {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+
+  .Alert-close {
+    position: absolute;
+    right: 1rem;
+    top: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #fff;
+    cursor: pointer;
+  }
+}
+
+.alert-success {
+  @include alert-style($alert-success-bg, $alert-success-color, $alert-success-border-color);
+}
+
+.alert-warning {
+  @include alert-style($alert-warning-bg, $alert-warning-color, $alert-warning-border-color);
+}
+
+.alert-error {
+  @include alert-style($alert-danger-bg, $alert-danger-color, $alert-danger-border-color);
+}

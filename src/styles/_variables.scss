@@ -1,0 +1,319 @@
+@use 'sass:color';
+$white: #fff !default;
+$black: #000 !default;
+
+$gray-50: #f7f5ef !default;
+$gray-100: #f3f0e8 !default;
+$gray-200: #e0dacf !default;
+$gray-300: #cfc5b5 !default;
+$gray-400: #bbae9e !default;
+$gray-500: #a59485 !default;
+$gray-600: #86776c !default;
+$gray-700: #6e5e55 !default;
+$gray-800: #574842 !default;
+$gray-900: #3e322f !default;
+
+$primary: #3a6ea5 !default; // 复古蓝绿色调主色
+$primary-light: #6a98d1 !default;
+$primary-dark: #2b5180 !default;
+
+$success: #a8d5ba !default; // 柔和薄荷绿（清新）
+$warning: #f3caa0 !default; // 复古杏黄（温暖）
+$info: #b3c7d6 !default; // 淡蓝灰蓝（温润）
+$danger: #a52a2a !default; // error 改为 danger 保持一致
+
+// 复刻原代码中的 $theme-colors，但替换为复古色
+$theme-colors: (
+  'primary': $primary,
+  'secondary': $gray-600,
+  'success': $success,
+  'info': $info,
+  'warning': $warning,
+  'danger': $danger,
+  'light': $gray-100,
+  'dark': $gray-800,
+) !default;
+
+// 其他字体、字号、行高、边框、按钮、阴影等完全照搬下面这部分（摘自你给的第一段完整变量，直接复制过来即可）
+
+$font-family-sans-serif:
+  -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+  sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !default;
+$font-family-monospace:
+  SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !default;
+$font-family-base: $font-family-sans-serif !default;
+
+// 字体大小
+$font-size-base: 1rem !default; // 浏览器默认一般16px
+$font-size-lg: $font-size-base * 1.25 !default;
+$font-size-sm: $font-size-base * 0.875 !default;
+$font-size-root: null !default;
+
+// 字重
+$font-weight-lighter: lighter !default;
+$font-weight-light: 300 !default;
+$font-weight-normal: 400 !default;
+$font-weight-bold: 700 !default;
+$font-weight-bolder: bolder !default;
+$font-weight-base: $font-weight-normal !default;
+
+// 行高
+$line-height-base: 1.5 !default;
+$line-height-lg: 2 !default;
+$line-height-sm: 1.25 !default;
+
+// 标题大小
+$h1-font-size: $font-size-base * 2.5 !default;
+$h2-font-size: $font-size-base * 2 !default;
+$h3-font-size: $font-size-base * 1.75 !default;
+$h4-font-size: $font-size-base * 1.5 !default;
+$h5-font-size: $font-size-base * 1.25 !default;
+$h6-font-size: $font-size-base !default;
+
+// 链接
+$link-color: $primary !default;
+$link-decoration: none !default;
+$link-hover-color: color.adjust($link-color, $lightness: -15%) !default;
+$link-hover-decoration: underline !default;
+
+// body
+$body-bg: $white !default;
+$body-color: $gray-900 !default;
+$body-text-align: null !default;
+
+// Spacing
+$spacer: 1rem !default;
+
+// Paragraphs
+
+$paragraph-margin-bottom: 1rem !default;
+
+// 字体其他部分 heading list hr 等等
+@use 'sass:math';
+
+$headings-margin-bottom: math.div($spacer, 2) !default;
+
+$headings-font-family: null !default;
+$headings-font-style: null !default;
+$headings-font-weight: 500 !default;
+$headings-line-height: 1.2 !default;
+$headings-color: null !default;
+
+$display1-size: 6rem !default;
+$display2-size: 5.5rem !default;
+$display3-size: 4.5rem !default;
+$display4-size: 3.5rem !default;
+
+$display1-weight: 300 !default;
+$display2-weight: 300 !default;
+$display3-weight: 300 !default;
+$display4-weight: 300 !default;
+$display-line-height: $headings-line-height !default;
+
+$lead-font-size: $font-size-base * 1.25 !default;
+$lead-font-weight: 300 !default;
+
+$small-font-size: 0.875em !default;
+
+$sub-sup-font-size: 0.75em !default;
+
+$text-muted: $gray-600 !default;
+
+$initialism-font-size: $small-font-size !default;
+
+$blockquote-small-color: $gray-600 !default;
+$blockquote-small-font-size: $small-font-size !default;
+$blockquote-font-size: $font-size-base * 1.25 !default;
+
+$hr-color: inherit !default;
+$hr-height: 1px !default;
+$hr-opacity: 0.25 !default;
+
+$legend-margin-bottom: 0.5rem !default;
+$legend-font-size: 1.5rem !default;
+$legend-font-weight: null !default;
+
+$mark-padding: 0.2em !default;
+
+$dt-font-weight: $font-weight-bold !default;
+
+$nested-kbd-font-weight: $font-weight-bold !default;
+
+$list-inline-padding: 0.5rem !default;
+
+$mark-bg: #fcf8e3 !default;
+
+$hr-margin-y: $spacer !default;
+
+// Code
+
+$code-font-size: $small-font-size !default;
+$code-color: #ff69b4 !default; // 直接用粉色的十六进制颜色码
+$pre-color: null !default;
+
+// options 可配置选项
+$enable-pointer-cursor-for-buttons: true !default;
+
+// 边框 和 border radius
+
+$border-width: 1px !default;
+$border-color: $gray-300 !default;
+
+$border-radius: 0.25rem !default;
+$border-radius-lg: 0.3rem !default;
+$border-radius-sm: 0.2rem !default;
+
+// 不同类型的 box shadow
+$box-shadow-sm: 0 0.125rem 0.25rem rgba($black, 0.075) !default;
+$box-shadow: 0 0.5rem 1rem rgba($black, 0.15) !default;
+$box-shadow-lg: 0 1rem 3rem rgba($black, 0.175) !default;
+$box-shadow-inset: inset 0 1px 2px rgba($black, 0.075) !default;
+
+// 按钮
+// 按钮基本属性
+$btn-font-weight: 400;
+$btn-padding-y: 0.375rem !default;
+$btn-padding-x: 0.75rem !default;
+$btn-font-family: $font-family-base !default;
+$btn-font-size: $font-size-base !default;
+$btn-line-height: $line-height-base !default;
+
+//不同大小按钮的 padding 和 font size
+$btn-padding-y-sm: 0.25rem !default;
+$btn-padding-x-sm: 0.5rem !default;
+$btn-font-size-sm: $font-size-sm !default;
+
+$btn-padding-y-lg: 0.5rem !default;
+$btn-padding-x-lg: 1rem !default;
+$btn-font-size-lg: $font-size-lg !default;
+
+// 按钮边框
+$btn-border-width: $border-width !default;
+
+// 按钮其他
+$btn-box-shadow:
+  inset 0 1px 0 rgba($white, 0.15),
+  0 1px 1px rgba($black, 0.075) !default;
+$btn-disabled-opacity: 0.65 !default;
+
+// 链接按钮
+$btn-link-color: $link-color !default;
+$btn-link-hover-color: $link-hover-color !default;
+$btn-link-disabled-color: $gray-600 !default;
+
+// 按钮 radius
+$btn-border-radius: $border-radius !default;
+$btn-border-radius-lg: $border-radius-lg !default;
+$btn-border-radius-sm: $border-radius-sm !default;
+
+$btn-transition:
+  color 0.15s ease-in-out,
+  background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out,
+  box-shadow 0.15s ease-in-out !default;
+
+// menu
+$menu-border-width: $border-width !default;
+$menu-border-color: $border-color !default;
+$menu-box-shadow:
+  inset 0 1px 0 rgba($white, 0.15),
+  0 1px 1px rgba($black, 0.075) !default;
+$menu-transition:
+  color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out !default;
+
+// menu-item
+$menu-item-padding-y: 0.5rem !default;
+$menu-item-padding-x: 1rem !default;
+$menu-item-active-color: $primary !default;
+$menu-item-active-border-width: 2px !default;
+$menu-item-disabled-color: $gray-600 !default;
+
+//sub-menu
+//submenu
+$submenu-box-shadow:
+  0 2px 4px 0 rgba(0, 0, 0, 0.12),
+  0 0 6px 0 rgba(0, 0, 0, 0.04);
+
+//input
+$input-padding-y: $btn-padding-y !default;
+$input-padding-x: $btn-padding-x !default;
+$input-font-family: $btn-font-family !default;
+$input-font-size: $btn-font-size !default;
+$input-font-weight: $font-weight-base !default;
+$input-line-height: $btn-line-height !default;
+
+$input-padding-y-sm: $btn-padding-y-sm !default;
+$input-padding-x-sm: $btn-padding-x-sm !default;
+$input-font-size-sm: $btn-font-size-sm !default;
+
+$input-padding-y-lg: $btn-padding-y-lg !default;
+$input-padding-x-lg: $btn-padding-x-lg !default;
+$input-font-size-lg: $btn-font-size-lg !default;
+
+$input-bg: $white !default;
+$input-bg-disabled: $gray-200 !default;
+$input-border-color: $gray-300 !default;
+$input-border-color-hover: $primary !default;
+$input-border-color-focus: $primary !default;
+
+$input-color: $body-color !default;
+$input-placeholder-color: $gray-600 !default;
+$input-box-shadow: inset 0 1px 2px rgba($black, 0.075) !default;
+$input-box-shadow-focus: 0 0 0 0.2rem rgba($primary, 0.25) !default;
+
+$input-height-border: 2 !default;
+$input-border-radius: $border-radius !default;
+$input-border-radius-sm: $border-radius-sm !default;
+$input-border-radius-lg: $border-radius-lg !default;
+
+$input-transition:
+  border-color 0.15s ease-in-out,
+  box-shadow 0.15s ease-in-out !default;
+
+// table
+$table-bg: $white !default;
+$table-bg-accent: $gray-100 !default;
+$table-bg-hover: $gray-200 !default;
+$table-border-color: $gray-300 !default;
+$table-border-color-accent: $gray-200 !default;
+$table-border-color-hover: $gray-400 !default;
+
+// alert
+$alert-padding-y: 0.75rem !default;
+$alert-padding-x: 1.25rem !default;
+$alert-margin-bottom: 1rem !default;
+$alert-border-radius: $border-radius !default;
+
+// Alert
+$alert-success-bg: color.adjust($success, $lightness: 20%) !default;
+$alert-success-border-color: $success !default;
+$alert-success-color: color.adjust($success, $lightness: -30%) !default;
+
+$alert-info-bg: color.adjust($info, $lightness: 40%) !default;
+$alert-info-border-color: $info !default;
+$alert-info-color: color.adjust($info, $lightness: -30%) !default;
+
+$alert-warning-bg: color.adjust($warning, $lightness: 15%) !default;
+$alert-warning-border-color: $warning !default;
+$alert-warning-color: color.adjust($warning, $lightness: -30%) !default;
+
+$alert-danger-bg: color.adjust($danger, $lightness: 40%) !default;
+$alert-danger-border-color: $danger !default;
+$alert-danger-color: color.adjust($danger, $lightness: -30%) !default;
+
+// Navs
+
+$nav-link-padding-y: 0.5rem !default;
+$nav-link-padding-x: 1rem !default;
+$nav-link-disabled-color: $gray-600 !default;
+
+$nav-tabs-border-color: $gray-300 !default;
+$nav-tabs-border-width: $border-width !default;
+$nav-tabs-border-radius: $border-radius !default;
+$nav-tabs-link-hover-border-color: $gray-200 $gray-200 $nav-tabs-border-color !default;
+$nav-tabs-link-hover-color: $primary !default;
+$nav-tabs-link-active-color: $primary !default;
+$nav-tabs-link-active-bg: $body-bg !default;
+$nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg !default;
+$nav-tabs-content-margin: 1rem !default;

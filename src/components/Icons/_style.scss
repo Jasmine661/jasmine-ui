@@ -1,0 +1,8 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+@each $key, $value in $theme-colors {
+  .icon-#{$key} {
+    color: $value;
+  }
+}
