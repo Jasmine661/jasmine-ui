@@ -8,7 +8,7 @@ const defaultProps = {
   onClick: vi.fn(),
 }
 
-const tsetProps: ButtonProps = {
+const testProps: ButtonProps = {
   className: 'test',
   size: 'lg' as ButtonSize,
   btnType: 'primary' as ButtonType,
@@ -34,7 +34,7 @@ describe('test Button component', () => {
   })
   test('should render the correct component based on different props', () => {
     // 测试不同的props是否生效
-    const wrapper = render(<Button {...tsetProps}>Primary</Button>)
+    const wrapper = render(<Button {...testProps}>Primary</Button>)
     const element = wrapper.getByText('Primary')
     expect(element).toBeInTheDocument()
     expect(element).toHaveClass('btn btn-primary btn-lg test')
