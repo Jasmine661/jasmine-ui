@@ -253,14 +253,26 @@ $input-font-size-lg: $btn-font-size-lg !default;
 
 $input-bg: $white !default;
 $input-bg-disabled: $gray-200 !default;
+$input-border-width: $border-width !default;
 $input-border-color: $gray-300 !default;
 $input-border-color-hover: $primary !default;
 $input-border-color-focus: $primary !default;
 
 $input-color: $body-color !default;
+$input-focus-color: $body-color !default;
+$input-focus-bg: $input-bg !default;
+$input-focus-border-color: $primary !default;
 $input-placeholder-color: $gray-600 !default;
 $input-box-shadow: inset 0 1px 2px rgba($black, 0.075) !default;
 $input-box-shadow-focus: 0 0 0 0.2rem rgba($primary, 0.25) !default;
+$input-focus-box-shadow: $input-box-shadow-focus !default;
+
+$input-disabled-bg: $gray-200 !default;
+$input-disabled-border-color: $gray-400 !default;
+
+$input-group-addon-color: $gray-600 !default;
+$input-group-addon-bg: $gray-100 !default;
+$input-group-addon-border-color: $gray-300 !default;
 
 $input-height-border: 2 !default;
 $input-border-radius: $border-radius !default;

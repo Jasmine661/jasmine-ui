@@ -35,7 +35,7 @@ export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>
  * Button 组件
  * 根据 btnType 判断渲染 button 或 a 标签
  */
-const Button: React.FC<ButtonProps> = (props) => {
+export const Button: React.FC<ButtonProps> = (props) => {
   const {
     btnType = 'default',
     disabled = false,

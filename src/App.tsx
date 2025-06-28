@@ -4,19 +4,23 @@ import Alert from './components/Alert/Alert'
 import Menu from './components/Menu/menu'
 import MenuItem from './components/Menu/menuItem'
 import SubMenu from './components/Menu/subMenu'
-
 import Tabs from './components/Tabs/tabs'
 import TabsItem from './components/Tabs/tabsItem'
-
 import Icon from './components/Icons/icon'
-
 import Transition from './components/Transition/Transition'
+import Input from './components/Input/input'
 
 function App() {
   const [count, setCount] = useState(0)
   const [show, setShow] = useState(false)
   return (
     <>
+      {/* 测试input */}
+      <input type="text" />
+      <div>
+        <Input></Input>
+        <Input size="sm"></Input>
+      </div>
       {/* 测试transition */}
       <div>
         <Button onClick={() => setShow(!show)}>Toggle</Button>
