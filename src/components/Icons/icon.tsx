@@ -2,12 +2,12 @@ import React from 'react'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import type { FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
-import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fas, faR, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { library } from '@fortawesome/fontawesome-svg-core'
 
 import classNames from 'classnames'
 
-library.add(fas)
+library.add(fas, faR, faSpinner)
 
 type themeType =
   | 'primary'
