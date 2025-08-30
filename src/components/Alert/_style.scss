@@ -5,15 +5,21 @@
 .alert {
   padding: $alert-padding-y $alert-padding-x;
   border-radius: $alert-border-radius;
+  border: 1px solid $gray-300;
   font-size: 14px;
   color: #333;
   background-color: $white;
   position: relative;
   display: flex;
   justify-content: space-between;
+  width: 30%;
+  margin: 1rem 0;
   .Alert-text {
     strong {
+      display: block;
       font-weight: bold;
+      font-size: 1.125rem;
+      margin-top: 0.5rem;
     }
     p {
       margin-top: 0.5rem;

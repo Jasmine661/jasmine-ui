@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from './components/Button/Button'
 import Alert from './components/Alert/Alert'
 import Menu from './components/Menu/menu'
@@ -9,14 +9,21 @@ import TabsItem from './components/Tabs/tabsItem'
 import Icon from './components/Icons/icon'
 import Transition from './components/Transition/Transition'
 import Input from './components/Input/input'
+import axios from 'axios'
 
 function App() {
   const [count, setCount] = useState(0)
   const [show, setShow] = useState(false)
+
+  const [title, setTitle] = useState('')
+  useEffect(() => {
+    axios.get('https://dummyjson.com/products/1').then((res) => setTitle(res.data.title))
+  })
   return (
     <>
+      {/* 测试dummyJSON */}
+      <div>{title}</div>
       {/* 测试input */}
-      <input type="text" />
       <div>
         <Input></Input>
         <Input size="sm"></Input>
@@ -105,13 +112,7 @@ function App() {
       </div>
       {/* 测试Alert */}
       <div>
-        <Alert
-          type="success"
-          title="操作成功"
-          description="这是一个成功的提示"
-          closable={true}
-          onClose={() => {}}
-        />
+        <Alert type="success" description="这是一个成功的提示" closable={true} onClose={() => {}} />
         <Alert
           type="error"
           title="操作失败"
