@@ -2,10 +2,11 @@ import type { Meta, StoryFn } from '@storybook/react-vite'
 import Button from './Button'
 import type { ButtonProps } from './Button'
 
+// 元信息： 告诉storybook这是哪个组件，以及展示配置
 const meta: Meta<typeof Button> = {
-  title: 'Components/Button',
-  component: Button,
-  tags: ['autodocs'],
+  title: 'Components/Button', // 组件在storybook的路径
+  component: Button, // 对应的React组件
+  tags: ['autodocs'], // 自动生成文档
   // 添加注释内容
   parameters: {
     docs: {
@@ -60,6 +61,8 @@ export default meta
 
 const Template: StoryFn<ButtonProps> = (args) => <Button {...args} />
 
+// 以下是单个story，定义某个特殊场景
+// args是组件的props
 export const Default = Template.bind({})
 Default.args = {
   children: 'Default Button',

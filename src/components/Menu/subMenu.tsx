@@ -27,6 +27,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
   const timer = useRef<any>(null)
 
   const renderChildren = () => {
+    // React.Children.map会自动处理children，从而得到每个child的索引i
     const childrenComponents = React.Children.map(children, (child, i) => {
       const childElement = child as React.ReactElement<MenuItemProps>
       const { displayName } = childElement.type as any

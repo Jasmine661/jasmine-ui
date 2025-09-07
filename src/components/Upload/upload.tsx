@@ -10,7 +10,7 @@ interface UploadProps {
   onError?: (err: any, file: File) => void
 }
 
-export const Upload: React.FC<UploadProps> = (props) => {
+export const Upload: React.FC<UploadProps> = () => {
   // const { action, onProgress, onSuccess, onError } = props
   const fileInput = useRef<HTMLInputElement>(null)
 

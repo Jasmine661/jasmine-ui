@@ -47,11 +47,11 @@ function App() {
             <br />
           </div>
         </Transition>
-        <Transition in={show} timeout={200} animation="zoom-in-top" wrapper={true}>
+        {/* <Transition in={show} timeout={200} animation="zoom-in-top" wrapper={true}>
           <Button btnType="primary" size="lg">
             test
           </Button>
-        </Transition>
+        </Transition> */}
       </div>
       {/* 测试icon */}
       <div>

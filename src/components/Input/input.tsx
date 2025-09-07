@@ -4,6 +4,7 @@ import type { IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import Icon from '../Icons/icon'
 
+// Omit是TypeScript用于从原有类型中排除某些值的工具类型，如以下的size，是InputHTMLAttributes中有的
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size'> {
   size?: string
   append?: string | ReactElement

@@ -25,7 +25,7 @@ const Transition: React.FC<TransitionProps> = (props) => {
     animation = 'zoom-in-top', // 动画类型，决定类名前缀
     classNames = animation,
     children,
-    in: inProp = false, // 控制组件是否进入动画
+    in: inProp = false, // 控制组件是否进入动画,是将prop中的in属性重构并命名为inProp
     timeout = 200, // 控制动画时长
     // 以下是生命周期钩子函数，可以让使用者在动画的不同阶段执行自定义逻辑，不影响动画本身运行
     onEnter,
@@ -51,8 +51,8 @@ const Transition: React.FC<TransitionProps> = (props) => {
       setIsVisible(true) // 显示元素
       setStatus('enter') // 设置状态为准备进入
       onEnter?.() // 调用onEnter钩子
-      // enterTimer = window.setTimeout(() => setStatus('enter'), 30) // 进入动画开始，强制让浏览器渲染一次enter状态，避免闪烁
-      setStatus('enter')
+      // enterTimer = window.setTimeout(() => setStatus('enter'), 30)
+      // 进入动画开始，强制让浏览器渲染一次enter状态，避免闪烁
       doneTimer = window.setTimeout(() => {
         setStatus('enter-active') // 进入动画后
         onEntered?.()
