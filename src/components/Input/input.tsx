@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react'
 import type { ChangeEvent, InputHTMLAttributes, ReactElement } from 'react'
-import type { IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import type { IconProp } from '@fortawesome/fontawesome-svg-core'
 import classNames from 'classnames'
 import Icon from '../Icons/icon'
 
@@ -10,7 +10,7 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size
   append?: string | ReactElement
   prepend?: string | ReactElement
   disabled?: boolean
-  icon?: IconDefinition
+  icon?: IconProp
   style?: React.CSSProperties
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }

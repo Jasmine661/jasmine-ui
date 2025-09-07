@@ -23,10 +23,16 @@ function App() {
     <>
       {/* 测试dummyJSON */}
       <div>{title}</div>
+      <hr />
       {/* 测试input */}
       <div>
-        <Input></Input>
-        <Input size="sm"></Input>
+        <Input placeholder="default input"></Input>
+        <Input size="sm" placeholder="small input"></Input>
+        <Input size="lg" placeholder="large input"></Input>
+        <Input prepend={'https://'}></Input>
+        <Input append={'.com'}></Input>
+        <Input icon="search"></Input>
+        <Input disabled placeholder="disabled input"></Input>
       </div>
       {/* 测试transition */}
       <div>
