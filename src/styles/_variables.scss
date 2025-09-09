@@ -315,7 +315,7 @@ $alert-danger-bg: color.adjust($danger, $lightness: 40%) !default;
 $alert-danger-border-color: $danger !default;
 $alert-danger-color: color.adjust($danger, $lightness: -30%) !default;
 
-// Navs
+// Nav
 
 $nav-link-padding-y: 0.5rem !default;
 $nav-link-padding-x: 1rem !default;
@@ -330,3 +330,11 @@ $nav-tabs-link-active-color: $primary !default;
 $nav-tabs-link-active-bg: $body-bg !default;
 $nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg !default;
 $nav-tabs-content-margin: 1rem !default;
+
+// Progress bars
+
+$progress-font-size: $font-size-base * 0.75 !default;
+$progress-bg: $gray-200 !default;
+$progress-border-radius: $border-radius !default;
+$progress-bar-color: $white !default;
+$progress-bar-transition: width 0.6s ease !default;

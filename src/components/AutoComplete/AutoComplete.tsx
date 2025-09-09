@@ -2,6 +2,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useCallback,
   type ChangeEvent,
   type KeyboardEvent,
   type ReactElement,
@@ -17,6 +18,7 @@ interface DataSourceObject {
   value: string
 }
 
+// 要求数据组的每一项都包含value属性
 export type DataSourceType<T = Record<string, unknown>> = T & DataSourceObject
 
 export interface AutoCompleteProps<T = Record<string, unknown>>
@@ -41,12 +43,14 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
   const [highlightedIndex, setHighlightedIndex] = useState(-1)
   // 控制点击其他位置隐藏列表
   const componentRef = useRef<HTMLDivElement>(null)
-  // 防止onselect之后继续搜索
+  // 防止onSelect之后继续搜索
   const triggerSearch = useRef(false)
 
   useClickOutside(componentRef, () => {
     setSuggestions([])
   })
+
+  // 用于防抖
   const debouncedValue = useDebounce(inputValue, 300)
   // 使用自定义hook配合useEffect完成节流优化
   useEffect(() => {
@@ -67,9 +71,9 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
       triggerSearch.current = false
       setShowDropdown(false)
     }
-  }, [debouncedValue, fetchSuggestions]) // 所有在 effect 内部使用的变量都应该包含在依赖数组中
+  }, [debouncedValue, fetchSuggestions]) // 注意：所有在useEffect内部使用的变量都应该包含在依赖数组中
 
-  // 键盘控制
+  // 高亮选中项
   const highlight = (index: number) => {
     if (suggestions.length === 0) return
     if (index < 0) index = suggestions.length - 1
@@ -77,6 +81,7 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
     setHighlightedIndex(index)
   }
 
+  // 键盘上/下/enter/esc控制选择
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case 'ArrowDown':
@@ -97,7 +102,6 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
         // 关闭下拉框
         setSuggestions([])
         setShowDropdown(false)
-
         break
       default:
         break
@@ -110,6 +114,10 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
     triggerSearch.current = true
   }
 
+  const handleExited = useCallback(() => {
+    setSuggestions([])
+  }, [])
+
   const handleSelect = (item: DataSourceType<T>) => {
     setInputValue(item.value)
     setSuggestions([])
@@ -119,6 +127,7 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
     triggerSearch.current = false
   }
 
+  // 根据用户自定义函数渲染内容
   const renderTemplate = (item: DataSourceType<T>) => {
     return renderOption ? renderOption(item) : item.value
   }
@@ -130,9 +139,7 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
         in={showDropdown || loading}
         animation="zoom-in-top"
         timeout={300}
-        onExited={() => {
-          setSuggestions([])
-        }}
+        onExited={handleExited}
       >
         <ul className="jasmine-suggestion-list">
           {loading && (

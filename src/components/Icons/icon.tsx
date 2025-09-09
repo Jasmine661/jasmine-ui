@@ -9,7 +9,7 @@ import classNames from 'classnames'
 
 library.add(fas, faR, faSpinner)
 
-type themeType =
+export type themeType =
   | 'primary'
   | 'secondary'
   | 'success'

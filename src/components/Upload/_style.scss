@@ -19,7 +19,7 @@
   &:hover {
     border: 1px dashed $primary;
   }
-  &.is-dragover {
+  &.is-dragger {
     border: 2px dashed $primary;
     background: rgba($primary, 0.2);
   }

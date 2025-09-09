@@ -9,6 +9,7 @@ import TabsItem from './components/Tabs/tabsItem'
 import Icon from './components/Icons/icon'
 import Transition from './components/Transition/Transition'
 import Input from './components/Input/input'
+import Upload from './components/Upload/upload'
 import axios from 'axios'
 
 function App() {
@@ -17,12 +18,45 @@ function App() {
 
   const [title, setTitle] = useState('')
   useEffect(() => {
-    axios.get('https://dummyjson.com/products/1').then((res) => setTitle(res.data.title))
-  })
+    axios
+      .get('https://jsonplaceholder.typicode.com/posts/1', {
+        headers: {
+          'X-Request-With': 'MXLHttpRequest',
+        },
+        responseType: 'json',
+      })
+      .then((res) => {
+        console.log(res)
+        setTitle(res.data.title)
+      })
+  }, [])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files
+    if (file) {
+      const uploadedFile = file[0]
+      const formData = new FormData()
+      formData.append(uploadedFile.name, uploadedFile)
+      axios
+        .post('https://jsonplaceholder.typicode.com/posts', formData, {
+          headers: {
+            'Context-type': 'Multipart/from-data',
+          },
+        })
+        .then((res) => {
+          console.log(res)
+        })
+    }
+  }
   return (
     <>
-      {/* 测试dummyJSON */}
+      {/* 测试Upload */}
+      <div>
+        <Upload action=""></Upload>
+      </div>
+      {/* 测试JSONPlaceholder接口 */}
       <div>{title}</div>
+      <input type="file" name="myFile" onChange={handleChange} />
       <hr />
       {/* 测试input */}
       <div>

@@ -4,6 +4,7 @@ import MenuContext from './menuContext'
 import type { MenuItemProps } from './menuItem'
 import Icon from '../Icons/icon'
 import Transition from '../Transition/Transition'
+import useClickOutside from '../hooks/useClickOutside'
 
 interface SubMenuProps {
   index?: string
@@ -25,6 +26,9 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
   })
 
   const timer = useRef<any>(null)
+
+  const subMenuRef = useRef<HTMLLIElement>(null)
+  useClickOutside(subMenuRef, () => setIsOpen(false))
 
   const renderChildren = () => {
     // React.Children.map会自动处理children，从而得到每个child的索引i
@@ -74,7 +78,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
       : {}
 
   return (
-    <li key={index} className={classes} {...hoverEvents}>
+    <li key={index} className={classes} ref={subMenuRef} {...hoverEvents}>
       <div className="submenu-title" onClick={handlerClick} {...clickEvents}>
         {title}
         <Icon icon="chevron-down" theme="primary" className="arrow-icon" size="sm" />
