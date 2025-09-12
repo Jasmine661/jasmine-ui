@@ -1,46 +1,48 @@
-import React, { forwardRef, useImperativeHandle } from 'react'
+import React, { useImperativeHandle, useMemo } from 'react'
 import type { ReactNode } from 'react'
 import './_style.scss'
-import useStore from './useStore'
+import useForm from './useForm'
 import type { FormState } from './useStore'
-import { FormContext, type IFormContext } from './formContext'
+import { FormContext } from './formContext'
 import type { ValidateError } from 'async-validator'
 
 export type RenderProps = (form: FormState) => ReactNode
-// 
-export type IFormRef = Omit<ReturnType<typeof useStore>, 'fields' | 'dispatch' | 'form' >
+
+export type IFormRef = Omit<ReturnType<typeof useForm>, 'fields' | 'form' >
 
 export interface FormProps {
   children?: ReactNode | RenderProps
   name?: string
   initialValues?: Record<string, any>
-  // onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void
   onFinish?: (values: Record<string,any>) => void
   onFinishFailed?: (values: Record<string,any>,errors: Record<string,ValidateError[]>) => void
-  ref?: React.Ref<HTMLFormElement>
 }
 
-const From = forwardRef<IFormRef, FormProps>((props, ref) => {
-  const { children, name, initialValues, onFinish, onFinishFailed } = props
-  const { form, fields, dispatch, ...restProps } = useStore(initialValues)
-  const { validateField, validateAllFields } = restProps
+const Form = (props: FormProps & { ref?: React.Ref<IFormRef> }) => {
+  const { ref, children, name, initialValues, onFinish, onFinishFailed } = props
+  const formData = useForm({
+    initialValues,
+    onFinish,
+    onFinishFailed
+  })
+  const { form, fields, dispatch, submitForm, validateField } = formData
+  
   useImperativeHandle(ref, () => {
     return {
-      ...restProps
+      ...formData,
+      // 排除不需要暴露的属性
+      form: undefined,
+      fields: undefined
     }
   })
-  const passedContext: IFormContext = { dispatch, fields, initialValues, validateField }
-  const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const { isValid, errors, values } = await validateAllFields()
-    
-    if (isValid) {
-      onFinish?.(values)
-    } else {
-      onFinishFailed?.(values, errors)
-    }
-  }
+
+  const passedContext = useMemo(() => ({
+    dispatch,
+    fields, 
+    initialValues, 
+    validateField
+  }), [dispatch, fields, initialValues, validateField])
+
   let childrenNode: ReactNode
   if(typeof children === 'function') {
     childrenNode = children(form)
@@ -58,6 +60,6 @@ const From = forwardRef<IFormRef, FormProps>((props, ref) => {
       </div>
     </>
   )
-})
+}
 
-export default From
+export default Form

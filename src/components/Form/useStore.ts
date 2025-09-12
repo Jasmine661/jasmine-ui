@@ -1,4 +1,4 @@
-import { useState, useReducer } from 'react'
+import { useState, useReducer, useCallback } from 'react'
 import Schema from 'async-validator'
 import type { RuleItem, ValidateError } from 'async-validator'
 import { each, mapValues } from 'lodash-es'
@@ -79,9 +79,9 @@ function useStore(initialValues?: Record<string, any>) {
   const [form, setForm] = useState<FormState>({ isValid: true,isSubmitting: false,errors:{} })
   const [fields, dispatch] = useReducer(fieldsReducer, {})
   // 用于获取单个表单项的值
-  const getFieldValue = (key: string) => {
+  const getFieldValue = useCallback((key: string) => {
     return fields[key]?.value
-  }
+  }, [fields])
   // 用于获取所有表单项的值 {'username': 'jasmine','password': '123456'}
   const getFieldsValue = () => {
     return mapValues(fields, field => field.value)
@@ -105,7 +105,7 @@ function useStore(initialValues?: Record<string, any>) {
   }
   
   // 将 CustomRule 转换为 RuleItem
-  const transformRules = (rules: CustomRule[]) => {
+  const transformRules = useCallback((rules: CustomRule[]) => {
     return rules.map(rule => {
       if(typeof rule === 'function') {
         const calledRule = rule({getFieldValue})
@@ -114,7 +114,7 @@ function useStore(initialValues?: Record<string, any>) {
         return rule
       }
     })
-  }
+  }, [getFieldValue])
 
   // 用于单个表单验证
   const validateField = async (name: string) => {
@@ -149,7 +149,10 @@ function useStore(initialValues?: Record<string, any>) {
     }
   }
   // 用于整个表单验证
-  const validateAllFields = async () => {
+  const validateAllFields = useCallback(async () => {
+    // 开始验证，设置提交状态
+    setForm(prev => ({ ...prev, isSubmitting: true }))
+    
     let isValid = true
     let errors: Record<string, ValidateError[]> = {}
     
@@ -180,14 +183,37 @@ function useStore(initialValues?: Record<string, any>) {
       }
     })
     
-    setForm({ ...form, isSubmitting: false, isValid, errors })
+    // 验证完成，设置提交状态为 false
+    setForm(prev => ({ ...prev, isSubmitting: false, isValid, errors }))
     return { isValid, errors, values: valueMap }
     
-  }
+  }, [fields, transformRules, dispatch])
+
+  // submit提交优化
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const submitForm = useCallback(
+    async (
+      onFinish?: (values: Record<string, any>) => void, 
+      onFinishFailed?: (values: Record<string, any>, errors: Record<string, ValidateError[]>) => void
+    ) => {
+    setIsSubmitting(true)  // 开始提交
+    try {
+      const { isValid, errors, values } = await validateAllFields()
+      if (isValid) {
+        onFinish?.(values)
+      } else {
+        onFinishFailed?.(values, errors)
+      }
+    } finally {
+      setIsSubmitting(false)  // 无论成功失败都结束提交状态
+    }
+  }, [validateAllFields])
 
   return {
     fields,
     form,
+    isSubmitting,
+    submitForm,
     setForm,
     dispatch,
     getFieldValue,
