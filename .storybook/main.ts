@@ -12,6 +12,14 @@ const config: StorybookConfig = {
     name: '@storybook/react-vite',
     options: {},
   },
+  viteFinal: async (config) => {
+    config.resolve = config.resolve || {}
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': new URL('../src', import.meta.url).pathname,
+    }
+    return config
+  },
   typescript: {
     reactDocgen: 'react-docgen-typescript',
   },

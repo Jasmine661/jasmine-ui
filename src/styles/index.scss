@@ -7,11 +7,13 @@
 
 @use './animation';
 
-@use '../components/Button/style' as button_style;
-@use '../components/Alert/style' as alert_style;
-@use '../components/Menu/style' as menu_style;
-@use '../components/Tabs/style' as tabs_style;
-@use '../components/Icons/style' as icons_style;
-@use '../components/Input/style' as input_style;
-@use '../components/AutoComplete/style' as auto_complete_style;
-@use '../components/Progress/style' as progress_style;
+@use '../components/Button/_style' as button_style;
+@use '../components/Alert/_style' as alert_style;
+@use '../components/Menu/_style' as menu_style;
+@use '../components/Tabs/_style' as tabs_style;
+@use '../components/Icons/_style' as icons_style;
+@use '../components/Input/_style' as input_style;
+@use '../components/AutoComplete/_style' as auto_complete_style;
+@use '../components/Progress/_style' as progress_style;
+@use '../components/Upload/_style' as upload_style;
+// @use '../components/Form/_style' as form_style;
