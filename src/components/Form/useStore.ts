@@ -75,13 +75,35 @@ function fieldsReducer(state: FieldState, action: FieldAction): FieldState {
   }
 }
 
-function useStore() {
+function useStore(initialValues?: Record<string, any>) {
   const [form, setForm] = useState<FormState>({ isValid: true,isSubmitting: false,errors:{} })
   const [fields, dispatch] = useReducer(fieldsReducer, {})
-  // 用于获取其他表单项的值
+  // 用于获取单个表单项的值
   const getFieldValue = (key: string) => {
     return fields[key]?.value
   }
+  // 用于获取所有表单项的值 {'username': 'jasmine','password': '123456'}
+  const getFieldsValue = () => {
+    return mapValues(fields, field => field.value)
+  }
+  // 用于设置单个表单项的值
+  const setFieldValue = (name: string, value: any) => {
+    if(fields[name]) {
+    dispatch({ type: 'onValueUpdate', name: name, value })
+
+    }
+  }
+  // 用于重置表单的内容
+  const resetFields = () => {
+    if(initialValues) {
+      each(initialValues,(value,name) => {
+        if(fields[name]) {
+          dispatch({ type: 'onValueUpdate', name, value })
+        }
+      })
+    }
+  }
+  
   // 将 CustomRule 转换为 RuleItem
   const transformRules = (rules: CustomRule[]) => {
     return rules.map(rule => {
@@ -169,6 +191,9 @@ function useStore() {
     setForm,
     dispatch,
     getFieldValue,
+    getFieldsValue,
+    setFieldValue,
+    resetFields,
     validateField,
     validateAllFields,
   }

@@ -1,5 +1,5 @@
-// import React from 'react'
-import Form from './form'
+import { useRef } from 'react'
+import Form, { type IFormRef } from './form'
 import Item from './formItem'
 import Input from '../Input/input'
 import Button from '../Button/Button'
@@ -24,68 +24,83 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // 检测重复密码
-  
 const confirmRule: CustomRule[] = [
   { type: 'string', required: true, min: 3, max: 8 },
   ({ getFieldValue }) => ({
     asyncValidator: (_, value) => {
       return new Promise((resolve, reject) => {
-        console.log('the value', getFieldValue('password'))
-        console.log(value)
         if (value !== getFieldValue('password')) {
-          reject('密码不一致')
-        } else {
-          resolve()
+          reject('The two passwords that you entered do not match!')
         }
+        setTimeout(() => {
+          resolve()
+        }, 1000)
       })
     }
   })
 ]
 
 export const BasicForm: Story = {
-  render: (args) => (
-    <Form
-      initialValues={{ username: '', agreement: false }}
-      {...args}
-    >
-      <Item
-        label="用户名"
-        name="username"
-        required
-        rules={[{ type: 'email', required: true, min: 3 }]}
+  render: (args) => {
+    const ref = useRef<IFormRef>(null)
+    const resetAll = () => {
+      console.log(ref.current)
+      console.log(ref.current?.getFieldValue('username'))
+      ref.current?.resetFields()
+    }
+    
+    return (
+      <Form
+        initialValues={{ username: '', agreement: false }}
+        ref={ref}
+        {...args}
       >
-        <Input placeholder="请输入用户名" />
-      </Item>
-      <Item
-        label="密码"
-        name="password"
-        required
-        rules={[{ type: 'string', required: true, min: 3, max: 8 }]}
-      >
-        <Input type="password" placeholder="请输入密码" />
-      </Item>
-      <Item label="确认密码" name="confirm-password" required rules={confirmRule}>
-        <Input type="password" placeholder="请再次输入密码" />
-      </Item>
+        {({ isValid, isSubmitting }) => (
+          <>
+            <Item
+              label="用户名"
+              name="username"
+              required
+              rules={[{ type: 'email', required: true, min: 3 }]}
+            >
+              <Input placeholder="请输入用户名" />
+            </Item>
+            <Item
+              label="密码"
+              name="password"
+              required
+              rules={[{ type: 'string', required: true, min: 3, max: 8 }]}
+            >
+              <Input type="password" placeholder="请输入密码" />
+            </Item>
+            <Item label="确认密码" name="confirm-password" required rules={confirmRule}>
+              <Input type="password" placeholder="请再次输入密码" />
+            </Item>
 
-      <Item 
-        name="agreement" 
-        valuePropName="checked" 
-        getValueFromEvent={(e) => e.target.checked}
-        rules={[{ type: 'enum', enum: [true], message: '请同意协议'}]}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <input type="checkbox" />
-          <span>
-            注册即代表你同意<a href="#">用户协议</a>
-          </span>
-        </div>
-      </Item>
-      <Item name="submit">
-        <Button type="submit">提交</Button>
-      </Item>
-    </Form>
-  ),
+            <Item 
+              name="agreement" 
+              valuePropName="checked" 
+              getValueFromEvent={(e) => e.target.checked}
+              rules={[{ type: 'enum', enum: [true], message: '请同意协议'}]}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input type="checkbox" />
+                <span>
+                  注册即代表你同意<a href="#">用户协议</a>
+                </span>
+              </div>
+            </Item>
+            <div className="jasmine-form-submit-area">
+              <Button type="submit">
+                提交 {isSubmitting ? '验证中' : '验证完毕'} {isValid ? '通过😄' : '没通过😢'}
+              </Button>
+              <Button type="button" onClick={resetAll}>重置</Button>
+            </div>
+          </>
+        )}
+      </Form>
+    )
+  },
 }
 
 export const LoginForm: Story = {
