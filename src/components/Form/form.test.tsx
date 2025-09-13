@@ -103,7 +103,7 @@ describe('Form 组件测试', () => {
 
   test('应该正确处理空的 children', () => {
     render(<Form children={null} />)
-    const formElement = screen.getByRole('form')
+    const formElement = screen.getByTestId('form')
     expect(formElement).toBeInTheDocument()
   })
 

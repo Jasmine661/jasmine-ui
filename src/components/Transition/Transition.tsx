@@ -32,7 +32,7 @@ const Transition: React.FC<TransitionProps> = (props) => {
     onEntered,
     onExit,
     onExited,
-    tag: Tag = 'div',
+    tag = 'div',
     wrapper, // 为了防止被包裹的组件有自身的transition样式
     ...restProps
   } = props
@@ -80,6 +80,8 @@ const Transition: React.FC<TransitionProps> = (props) => {
 
   if (!isVisible) return null
 
+  const Tag = tag as ElementType
+  
   return (
     <Tag className={`${classNames} ${animation}-${status}`} {...restProps}>
       {wrapper ? <div>{children}</div> : children}

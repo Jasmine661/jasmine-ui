@@ -51,7 +51,7 @@ const Form = (props: FormProps & { ref?: React.Ref<IFormRef> }) => {
   }
   return (
     <>
-      <form name={name} className="jasmine-form" onSubmit={submitForm}>
+      <form name={name} className="jasmine-form" onSubmit={submitForm} data-testid="form">
         <FormContext.Provider value={passedContext}>{childrenNode}</FormContext.Provider>
       </form>
     </>

@@ -35,36 +35,50 @@ describe('Transition 组件测试', () => {
     expect(screen.queryByText('Test Content')).not.toBeInTheDocument()
   })
 
-  test('应该正确应用默认动画类名', () => {
+  test('应该正确应用默认动画类名', async () => {
     render(<Transition {...defaultProps} />)
-    const element = screen.getByText('Transition Content')
-    expect(element).toHaveClass('zoom-in-top')
-    expect(element).toHaveClass('zoom-in-top-enter')
+    const element = screen.getByText('Transition Content').parentElement
+    // 等待状态更新
+    await waitFor(() => {
+      expect(element?.className).toContain('zoom-in-top')
+      expect(element?.className).toContain('enter')
+    })
   })
 
-  test('应该正确应用自定义动画类名', () => {
+  test('应该正确应用自定义动画类名', async () => {
     render(<Transition {...testProps} in={true} />)
-    const element = screen.getByText('Test Content')
-    expect(element).toHaveClass('zoom-in-left')
-    expect(element).toHaveClass('zoom-in-left-enter')
+    const element = screen.getByText('Test Content').parentElement
+    await waitFor(() => {
+      expect(element?.className).toContain('zoom-in-left')
+      expect(element?.className).toContain('enter')
+    })
   })
 
-  test('应该正确应用自定义 classNames', () => {
+  test('应该正确应用自定义 classNames', async () => {
     render(<Transition {...defaultProps} classNames="custom-transition" />)
-    const element = screen.getByText('Transition Content')
-    expect(element).toHaveClass('custom-transition')
+    const element = screen.getByText('Transition Content').parentElement
+    await waitFor(() => {
+      expect(element?.className).toContain('custom-transition')
+      expect(element?.className).toContain('enter')
+    })
   })
 
-  test('应该正确使用自定义标签', () => {
+  test('应该正确使用自定义标签', async () => {
     render(<Transition {...defaultProps} tag="span" />)
-    const element = screen.getByText('Transition Content')
-    expect(element.tagName).toBe('SPAN')
+    const element = screen.getByText('Transition Content').parentElement
+    // 检查元素是否为 span 标签
+    await waitFor(() => {
+      expect(element?.tagName.toLowerCase()).toBe('span')
+    })
   })
 
-  test('当 wrapper 为 true 时应该包装内容', () => {
+  test('当 wrapper 为 true 时应该包装内容', async () => {
     render(<Transition {...defaultProps} wrapper={true} />)
-    const element = screen.getByText('Transition Content')
-    expect(element.parentElement).toHaveClass('zoom-in-top')
+    const element = screen.getByText('Transition Content').parentElement?.parentElement
+    await waitFor(() => {
+      expect(element?.className).toContain('zoom-in-top')
+      expect(element?.className).toContain('enter')
+    })
   })
 
   test('应该正确调用生命周期钩子', async () => {

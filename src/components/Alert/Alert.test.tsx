@@ -19,22 +19,22 @@ const testProps: AlertProps = {
 describe('Alert 组件测试', () => {
   test('应该正确渲染默认的 Alert', () => {
     render(<Alert {...defaultProps} />)
-    const alertElement = screen.getByText('这是一个默认的提示信息')
+    const alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
     expect(alertElement).toBeInTheDocument()
     expect(alertElement).toHaveClass('alert')
   })
 
   test('应该根据不同的 type 属性渲染不同的样式', () => {
     const { rerender } = render(<Alert {...defaultProps} type="success" />)
-    let alertElement = screen.getByText('这是一个默认的提示信息')
+    let alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
     expect(alertElement).toHaveClass('alert-success')
 
     rerender(<Alert {...defaultProps} type="warning" />)
-    alertElement = screen.getByText('这是一个默认的提示信息')
+    alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
     expect(alertElement).toHaveClass('alert-warning')
 
     rerender(<Alert {...defaultProps} type="error" />)
-    alertElement = screen.getByText('这是一个默认的提示信息')
+    alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
     expect(alertElement).toHaveClass('alert-error')
   })
 
@@ -46,28 +46,30 @@ describe('Alert 组件测试', () => {
 
   test('当 closable 为 true 时应该显示关闭按钮', () => {
     render(<Alert {...testProps} />)
-    const closeButton = screen.getByTitle('close')
+    const closeButton = document.querySelector('.fa-close')
     expect(closeButton).toBeInTheDocument()
   })
 
   test('当 closable 为 false 时不应该显示关闭按钮', () => {
     render(<Alert {...defaultProps} closable={false} />)
-    const closeButton = screen.queryByTitle('close')
+    const closeButton = document.querySelector('.fa-close')
     expect(closeButton).not.toBeInTheDocument()
   })
 
   test('点击关闭按钮应该调用 onClose 回调', () => {
     const onCloseMock = vi.fn()
     render(<Alert {...testProps} onClose={onCloseMock} />)
-    const closeButton = screen.getByTitle('close')
-    fireEvent.click(closeButton)
+    const closeButton = document.querySelector('.fa-close')
+    expect(closeButton).toBeInTheDocument()
+    fireEvent.click(closeButton!)
     expect(onCloseMock).toHaveBeenCalledTimes(1)
   })
 
   test('点击关闭按钮后组件应该隐藏', () => {
     render(<Alert {...testProps} />)
-    const closeButton = screen.getByTitle('close')
-    fireEvent.click(closeButton)
+    const closeButton = document.querySelector('.fa-close')
+    expect(closeButton).toBeInTheDocument()
+    fireEvent.click(closeButton!)
     expect(screen.queryByText('操作成功完成')).not.toBeInTheDocument()
   })
 

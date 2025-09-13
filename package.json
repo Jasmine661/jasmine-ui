@@ -1,25 +1,48 @@
 {
   "name": "jasmine-ui",
-  "private": false,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "A React component library",
   "main": "dist/jasmine-ui.umd.js",
   "module": "dist/jasmine-ui.es.js",
   "types": "dist/types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "eslint-config-jasmine-ui.js",
+    "ESLINT.md"
   ],
+  "keywords": [
+    "react",
+    "ui",
+    "components",
+    "typescript"
+  ],
+  "author": "Jasmine661",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jasmine661/jasmine-ui.git"
+  },
+  "homepage": "https://github.com/Jasmine661/jasmine-ui#readme",
+  "bugs": {
+    "url": "https://github.com/Jasmine661/jasmine-ui/issues"
+  },
+  "eslintConfig": {
+    "extends": "./eslint-config-jasmine-ui.js"
+  },
   "scripts": {
     "dev": "vite",
     "build": "pnpm run build:types && pnpm run build:css && vite build",
     "build:parallel": "pnpm run build:types & pnpm run build:css & vite build",
-    "lint": "eslint .",
+    "lint": "eslint --ext js,ts,tsx src --max-warnings 5",
+    "lint:fix": "eslint --ext js,ts,tsx src --fix",
+    "lint:check": "eslint --ext js,ts,tsx src --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest --watch",
+    "test:nowatch": "vitest run --no-watch ",
     "build:types": "tsc --p tsconfig.build.json",
     "build:css": "sass src/styles/index.scss dist/jasmine-ui.css",
     "link": "pnpm link --global",
@@ -27,6 +50,10 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:storybook": "test-storybook"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -37,10 +64,7 @@
     "classnames": "^2.5.1",
     "lodash-es": "^4.17.21",
     "normalize.css": "^8.0.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-transition-group": "^4.4.5",
-    "jasmine-ui": "file:../jasmine-ui"
+    "react-transition-group": "^4.4.5"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "4.0.1",
@@ -62,6 +86,7 @@
     "@vitest/browser": "3.2.0",
     "@vitest/coverage-v8": "3.2.0",
     "@vitest/ui": "^3.2.0",
+    "cross-env": "^10.0.0",
     "eslint": "^9.25.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
@@ -70,6 +95,8 @@
     "jsdom": "^26.1.0",
     "playwright": "^1.53.1",
     "prettier": "^3.5.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "sass": "^1.89.1",
     "storybook": "9.0.12",
     "typescript": "~5.8.3",

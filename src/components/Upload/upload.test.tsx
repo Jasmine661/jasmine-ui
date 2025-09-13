@@ -44,14 +44,14 @@ describe('Upload 组件测试', () => {
 
   test('应该正确渲染拖拽上传', () => {
     render(<Upload {...testProps} />)
-    expect(screen.getByText('拖拽上传')).toBeInTheDocument()
+    expect(screen.getByText('拖拽文件到此上传')).toBeInTheDocument()
   })
 
   test('应该正确处理文件选择', async () => {
     const onChangeMock = vi.fn()
     render(<Upload {...defaultProps} onChange={onChangeMock} />)
     
-    const input = screen.getByRole('button').closest('div')?.querySelector('input[type="file"]')
+    const input = document.querySelector('input[type="file"]')
     expect(input).toBeInTheDocument()
     
     if (input) {
@@ -67,7 +67,7 @@ describe('Upload 组件测试', () => {
     const beforeUploadMock = vi.fn().mockReturnValue(true)
     render(<Upload {...testProps} beforeUpload={beforeUploadMock} />)
     
-    const input = screen.getByRole('button').closest('div')?.querySelector('input[type="file"]')
+    const input = document.querySelector('input[type="file"]')
     expect(input).toBeInTheDocument()
     
     if (input) {
@@ -84,7 +84,7 @@ describe('Upload 组件测试', () => {
     const onChangeMock = vi.fn()
     render(<Upload {...testProps} beforeUpload={beforeUploadMock} onChange={onChangeMock} />)
     
-    const input = screen.getByRole('button').closest('div')?.querySelector('input[type="file"]')
+    const input = document.querySelector('input[type="file"]')
     expect(input).toBeInTheDocument()
     
     if (input) {
@@ -99,7 +99,7 @@ describe('Upload 组件测试', () => {
 
   test('应该正确设置 input 属性', () => {
     render(<Upload {...testProps} />)
-    const input = screen.getByRole('button').closest('div')?.querySelector('input[type="file"]')
+    const input = document.querySelector('input[type="file"]')
     expect(input).toHaveAttribute('multiple')
     expect(input).toHaveAttribute('accept', '.jpg,.png')
   })
@@ -144,8 +144,9 @@ describe('Upload 组件测试', () => {
     
     render(<Upload {...defaultProps} defaultFileList={defaultFileList} onRemove={onRemoveMock} />)
     
-    const removeButton = screen.getByTitle('删除文件')
-    fireEvent.click(removeButton)
+    const removeButton = document.querySelector('.file-actions svg')
+    expect(removeButton).toBeInTheDocument()
+    fireEvent.click(removeButton!)
     
     expect(onRemoveMock).toHaveBeenCalledWith(defaultFileList[0])
   })

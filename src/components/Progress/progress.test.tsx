@@ -41,13 +41,13 @@ describe('Progress 组件测试', () => {
 
   test('应该根据 strokeHeight 属性正确设置进度条高度', () => {
     render(<Progress {...testProps} />)
-    const outerElement = screen.getByText('75%').closest('.jasmine-progress-bar-outer')
+    const outerElement = document.querySelector('.jasmine-progress-bar-outer')
     expect(outerElement).toHaveStyle('height: 20px')
   })
 
   test('应该根据 theme 属性正确应用样式类', () => {
     render(<Progress {...testProps} />)
-    const innerElement = screen.getByText('75%').closest('.jasmine-progress-bar-inner')
+    const innerElement = document.querySelector('.jasmine-progress-bar-inner')
     expect(innerElement).toHaveClass('color-success')
   })
 

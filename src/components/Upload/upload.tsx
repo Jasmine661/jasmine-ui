@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react'
 // import axios from 'axios'
 import './_style.scss'
 import axios from 'axios'
+import classNames from 'classnames'
 import UploadList from './uploadList'
 import Dragger from './dragger'
 
@@ -55,6 +56,7 @@ export const Upload: React.FC<UploadProps> = (props) => {
     multiple,
     children,
     drag,
+    className,
   } = props
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -161,7 +163,7 @@ export const Upload: React.FC<UploadProps> = (props) => {
   // console.log(fileList)
 
   return (
-    <div className="jasmine-upload-component">
+    <div className={classNames('jasmine-upload-component', className)}>
       <div
         className="jasmine-upload-input"
         style={{ display: 'inline-block' }}

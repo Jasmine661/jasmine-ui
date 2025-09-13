@@ -97,6 +97,6 @@ describe('Input 组件测试', () => {
     const customStyle = { color: 'red', fontSize: '16px' }
     render(<Input {...defaultProps} style={customStyle} />)
     const wrapperElement = screen.getByPlaceholderText('请输入内容').closest('.jasmine-input-wrapper')
-    expect(wrapperElement).toHaveStyle('color: red; font-size: 16px;')
+    expect(wrapperElement).toHaveStyle('color: rgb(255, 0, 0); font-size: 16px;')
   })
 })

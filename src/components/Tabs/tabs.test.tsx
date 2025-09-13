@@ -105,7 +105,7 @@ describe('Tabs 组件测试', () => {
     const customStyle = { color: 'red', fontSize: '16px' }
     render(<Tabs {...defaultProps} style={customStyle} />)
     const navElement = screen.getByText('Tab 1').closest('.jasmine-tabs-nav')
-    expect(navElement).toHaveStyle('color: red; font-size: 16px;')
+    expect(navElement).toHaveStyle('color: rgb(255, 0, 0); font-size: 16px;')
   })
 
   test('应该正确应用自定义 className', () => {

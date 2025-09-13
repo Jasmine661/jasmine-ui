@@ -81,7 +81,7 @@ describe('Menu 组件测试', () => {
     const customStyle = { color: 'red', fontSize: '16px' }
     render(<Menu {...defaultProps} style={customStyle} />)
     const menuElement = screen.getByTestId('menu')
-    expect(menuElement).toHaveStyle('color: red; font-size: 16px;')
+    expect(menuElement).toHaveStyle('color: rgb(255, 0, 0); font-size: 16px;')
   })
 
   test('应该正确应用自定义 className', () => {
