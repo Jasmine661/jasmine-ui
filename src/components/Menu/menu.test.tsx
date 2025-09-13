@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, fireEvent, screen } from '@testing-library/react'
 import { test, expect, describe, vi } from 'vitest'
 import Menu from './menu'

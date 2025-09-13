@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, fireEvent, screen } from '@testing-library/react'
 import { test, expect, describe, vi } from 'vitest'
 import Input from './input'
@@ -89,7 +88,7 @@ describe('Input 组件测试', () => {
     const inputElement = screen.getByPlaceholderText('请输入内容')
     expect(inputElement).toHaveValue('')
 
-    rerender(<Input {...defaultProps} value={null} />)
+    rerender(<Input {...defaultProps} value={undefined} />)
     expect(inputElement).toHaveValue('')
   })
 

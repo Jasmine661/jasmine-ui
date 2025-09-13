@@ -1,4 +1,3 @@
-// import React from 'react'
 import { fireEvent, render } from '@testing-library/react'
 import { test, expect, describe, vi } from 'vitest'
 import Button from './Button'

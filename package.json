@@ -49,7 +49,9 @@
     "unlink": "pnpm unlink --global",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test:storybook": "test-storybook"
+    "test:storybook": "test-storybook",
+    "prepare": "husky",
+    "prepublish": "npm run test:nowatch && npm run lint && npm run build"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
@@ -92,6 +94,7 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "eslint-plugin-storybook": "9.0.12",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "jsdom": "^26.1.0",
     "playwright": "^1.53.1",
     "prettier": "^3.5.3",

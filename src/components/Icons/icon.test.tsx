@@ -1,4 +1,3 @@
-import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { vi, test, expect, describe } from 'vitest'
 import Icon from './icon'

@@ -1,4 +1,3 @@
-// import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import { test, expect, describe, vi, beforeEach } from 'vitest'
 import Transition from './Transition'
