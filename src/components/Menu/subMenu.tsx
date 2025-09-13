@@ -6,7 +6,7 @@ import Icon from '../Icons/icon'
 import Transition from '../Transition/Transition'
 import useClickOutside from '../hooks/useClickOutside'
 
-interface SubMenuProps {
+export interface SubMenuProps {
   index?: string
   title: string
   className?: string

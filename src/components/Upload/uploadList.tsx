@@ -3,12 +3,12 @@ import type { UploadFile } from './upload'
 import Icon from '../Icons/icon'
 import Progress from '../Progress/progress'
 
-export interface uploadListProps {
+export interface UploadListProps {
   fileList: UploadFile[]
   onRemove: (file: UploadFile) => void
 }
 
-export const UploadList: React.FC<uploadListProps> = (props) => {
+export const UploadList: React.FC<UploadListProps> = (props) => {
   const { fileList, onRemove } = props
   return (
     <ul className="jasmine-upload-list">

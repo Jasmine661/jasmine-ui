@@ -54,10 +54,6 @@ const Form = (props: FormProps & { ref?: React.Ref<IFormRef> }) => {
       <form name={name} className="jasmine-form" onSubmit={submitForm}>
         <FormContext.Provider value={passedContext}>{childrenNode}</FormContext.Provider>
       </form>
-      <div>
-        <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(form)}</pre>
-        <pre style={{ whiteSpace: 'pre-wrap' }}>{JSON.stringify(fields)}</pre>
-      </div>
     </>
   )
 }

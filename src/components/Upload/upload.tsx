@@ -34,6 +34,7 @@ export interface UploadProps {
   multiple?: boolean
   children?: React.ReactNode
   drag?: boolean
+  className?: string
 }
 
 export const Upload: React.FC<UploadProps> = (props) => {
@@ -134,7 +135,7 @@ export const Upload: React.FC<UploadProps> = (props) => {
         },
         withCredentials,
         onUploadProgress: (e) => {
-          console.log('onUploadProgress:', e.loaded, e.total)
+          // console.log('onUploadProgress:', e.loaded, e.total)
           if (!e.total) return
           const percentage = Math.round((e.loaded * 100) / e.total)
           if (percentage < 100) {
@@ -144,20 +145,20 @@ export const Upload: React.FC<UploadProps> = (props) => {
         },
       })
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         updateFileList(_file, { status: 'success', response: res.data })
         onSuccess?.(res.data, file)
         onChange?.(file)
       })
       .catch((err) => {
-        console.log(err)
+        // console.log(err)
         updateFileList(_file, { status: 'error', error: err })
         onError?.(err, file)
         onChange?.(file)
       })
   }
 
-  console.log(fileList)
+  // console.log(fileList)
 
   return (
     <div className="jasmine-upload-component">

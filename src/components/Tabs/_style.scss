@@ -24,6 +24,14 @@
     cursor: default;
     background-color: transparent;
     border-color: transparent;
+    
+    // 禁用悬停效果
+    &:hover,
+    &:focus {
+      color: $nav-link-disabled-color;
+      background-color: transparent;
+      border-color: transparent;
+    }
   }
   &.is-active {
     color: $nav-tabs-link-active-color;

@@ -1,17 +1,32 @@
 {
   "name": "jasmine-ui",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
   "type": "module",
+  "main": "dist/jasmine-ui.umd.js",
+  "module": "dist/jasmine-ui.es.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "pnpm run build:types && pnpm run build:css && vite build",
+    "build:parallel": "pnpm run build:types & pnpm run build:css & vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest --watch",
+    "build:types": "tsc --p tsconfig.build.json",
+    "build:css": "sass src/styles/index.scss dist/jasmine-ui.css",
+    "link": "pnpm link --global",
+    "unlink": "pnpm unlink --global",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test:storybook": "test-storybook"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -24,7 +39,8 @@
     "normalize.css": "^8.0.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-transition-group": "^4.4.5"
+    "react-transition-group": "^4.4.5",
+    "jasmine-ui": "file:../jasmine-ui"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "4.0.1",

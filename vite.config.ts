@@ -1,11 +1,11 @@
 // / <reference types="vitest/config" />
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
-
-// https://vite.dev/config/
-import path from 'node:path'
+import { resolve } from 'path'
 import { fileURLToPath } from 'node:url'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
+import path from 'node:path'
+
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
@@ -15,6 +15,28 @@ export default defineConfig({
     alias: {
       '@': path.resolve(dirname, 'src'),
     },
+  },
+  build: {
+    // 库模式构建
+    lib: {
+      entry: resolve(dirname, 'src/index.tsx'),
+      name: 'JasmineUI',
+      fileName: (format) => `jasmine-ui.${format}.js`
+    },
+    // 外部化依赖
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM'
+        }
+      }
+    },
+    // 构建前清理
+    emptyOutDir: true,
+    // 输出目录
+    outDir: 'dist'
   },
   test: {
     environment: 'jsdom',
