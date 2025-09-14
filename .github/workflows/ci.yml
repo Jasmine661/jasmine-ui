@@ -91,10 +91,10 @@ jobs:
 
     # 步骤6：更新版本号
     - name: Bump version
-    run: |
-      git config --global user.name 'github-actions[bot]'
-      git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-      pnpm version patch -m "chore: release v%s"
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        pnpm version patch -m "chore: release v%s"
       
     # 步骤7：发布到 npm
     - name: Publish to npm
