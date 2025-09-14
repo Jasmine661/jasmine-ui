@@ -88,14 +88,21 @@ jobs:
     # 步骤5：构建组件库
     - name: Build package
       run: pnpm run build
+
+    # 步骤6：更新版本号
+    - name: Bump version
+    run: |
+      git config --global user.name 'github-actions[bot]'
+      git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      pnpm version patch -m "chore: release v%s"
       
-    # 步骤6：发布到 npm
+    # 步骤7：发布到 npm
     - name: Publish to npm
       run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  # 使用存储的 npm 令牌
         
-    # 步骤7：创建 GitHub Release（为代码创建版本标签，包含发布说明和变更日志
+    # 步骤8：创建 GitHub Release（为代码创建版本标签，包含发布说明和变更日志
     - name: Create GitHub Release
       uses: actions/create-release@v1
       env:
