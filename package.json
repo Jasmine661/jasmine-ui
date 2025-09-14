@@ -1,5 +1,5 @@
 {
-  "name": "@jasmine661/jasmine-ui",
+  "name": "jasmine-ui-661",
   "version": "1.0.0",
   "description": "A React component library",
   "main": "dist/jasmine-ui.umd.js",
