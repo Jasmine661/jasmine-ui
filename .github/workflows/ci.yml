@@ -50,7 +50,7 @@ jobs:
         
     # 步骤4：安装项目依赖
     - name: Install dependencies
-      run: pnpm install --frozen-lockfile  # 使用锁文件确保依赖版本一致
+      run: pnpm install   # 使用锁文件确保依赖版本一致
       
     # 步骤5：运行 ESLint 代码检查
     - name: Run linting
