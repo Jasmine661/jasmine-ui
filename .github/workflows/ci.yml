@@ -34,18 +34,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    # 步骤2：设置指定版本的 Node.js
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'  # 启用 npm 缓存以加速安装
-        
-    # 步骤3：安装 pnpm 包管理器
+    # 步骤2：安装 pnpm 包管理器
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
       with:
         version: 8
+        
+    # 步骤3：设置指定版本的 Node.js
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'pnpm'
+        cache-dependency-path: 'pnpm-lock.yaml'  # 指定 pnpm 锁定文件路径
         
     # 步骤4：安装项目依赖
     - name: Install dependencies
@@ -81,7 +82,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
+        cache: 'pnpm'
+        cache-dependency-path: 'pnpm-lock.yaml'
         registry-url: 'https://registry.npmjs.org'  # 指定 npm 官方注册表
         
     # 步骤3：安装 pnpm
@@ -150,7 +152,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
+        cache: 'pnpm'
+        cache-dependency-path: 'pnpm-lock.yaml'
         
     # 步骤3：安装 pnpm
     - name: Setup pnpm
