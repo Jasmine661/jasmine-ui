@@ -1,0 +1,16 @@
+# 代码所有者配置文件
+# 这个文件定义了谁负责审查特定文件的更改
+
+# 全局代码所有者：所有文件默认由 jasmine661 负责
+* @jasmine661
+
+# 组件特定所有者：组件相关文件
+/src/components/ @jasmine661  # 所有组件文件
+/.github/ @jasmine661         # GitHub 配置文件
+/docs/ @jasmine661            # 文档文件
+
+# 配置文件：重要的配置文件需要审查
+package.json @jasmine661      # 包配置文件
+tsconfig*.json @jasmine661    # TypeScript 配置文件
+vite.config.ts @jasmine661    # Vite 构建配置
+eslint.config.js @jasmine661  # ESLint 配置

@@ -1,0 +1,51 @@
+# Dependabot 自动合并工作流
+# 这个文件自动合并 Dependabot 创建的依赖更新 PR
+
+name: Dependabot Auto-merge
+
+# 触发条件：当有 PR 被创建或更新时
+on:
+  pull_request:
+    types: [opened, synchronize]  # PR 打开时和同步时触发
+
+# 定义任务
+jobs:
+  auto-merge:
+    name: Auto-merge Dependabot PRs
+    runs-on: ubuntu-latest
+    # 只处理 Dependabot 创建的 PR
+    if: github.actor == 'dependabot[bot]'
+    
+    steps:
+    # 步骤1：检出代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    # 步骤2：设置 Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    # 步骤3：安装 pnpm
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 8
+        
+    # 步骤4：安装依赖
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      
+    # 步骤5：运行测试确保更新不会破坏功能
+    - name: Run tests
+      run: pnpm run test:nowatch
+      
+    # 步骤6：自动合并 PR
+    - name: Auto-merge
+      uses: fastify/github-action-merge-dependabot@v3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}  # GitHub 令牌
+        target: minor                              # 只合并次要版本更新
+        merge-method: squash                       # 使用 squash 合并方式

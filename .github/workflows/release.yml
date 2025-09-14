@@ -1,0 +1,92 @@
+# 手动发布工作流
+# 这个文件允许你手动触发版本发布，而不需要推送代码
+
+name: Release
+
+# 触发条件：只能手动触发
+on:
+  workflow_dispatch:  # 手动触发工作流
+    inputs:
+      # 版本类型选择器
+      version_type:
+        description: 'Version type to bump'  # 描述
+        required: true                       # 必填
+        default: 'patch'                     # 默认值
+        type: choice                         # 选择类型
+        options:                             # 可选选项
+        - patch    # 补丁版本 (1.0.0 -> 1.0.1)
+        - minor    # 次要版本 (1.0.0 -> 1.1.0)
+        - major    # 主要版本 (1.0.0 -> 2.0.0)
+
+# 定义任务
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 步骤1：检出代码（需要写权限来创建分支）
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub 令牌
+        
+    # 步骤2：设置 Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    # 步骤3：安装 pnpm
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 8
+        
+    # 步骤4：安装依赖
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      
+    # 步骤5：运行测试确保代码质量
+    - name: Run tests
+      run: pnpm run test:nowatch
+      
+    # 步骤6：运行代码检查
+    - name: Run linting
+      run: pnpm run lint
+      
+    # 步骤7：更新版本号
+    - name: Bump version
+      run: |
+        # 使用 npm version 命令更新 package.json 中的版本号
+        npm version ${{ github.event.inputs.version_type }} --no-git-tag-version
+        # 将新版本号保存到环境变量中
+        echo "NEW_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+        
+    # 步骤8：构建包
+    - name: Build package
+      run: pnpm run build
+      
+    # 步骤9：创建 Pull Request
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: bump version to v${{ env.NEW_VERSION }}"  # 提交信息
+        title: "Release v${{ env.NEW_VERSION }}"                          # PR 标题
+        body: |
+          ## Release v${{ env.NEW_VERSION }}
+          
+          This PR contains the version bump for v${{ env.NEW_VERSION }}.
+          
+          ### Changes
+          - Version bumped to ${{ env.NEW_VERSION }}
+          - All tests passed
+          - Build completed successfully
+          
+          ### Next Steps
+          - Review and merge this PR
+          - The release will be automatically published to npm
+        branch: release/v${{ env.NEW_VERSION }}  # 创建新分支
+        delete-branch: true                     # 合并后删除分支

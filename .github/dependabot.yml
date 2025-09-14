@@ -1,0 +1,44 @@
+# Dependabot 配置文件
+# 这个文件配置 Dependabot 自动更新依赖
+
+version: 2  # 配置文件版本
+
+# 定义更新规则
+updates:
+  # 配置 npm 依赖更新
+  - package-ecosystem: "npm"  # 包管理器类型
+    directory: "/"            # 监控根目录
+    schedule:
+      interval: "weekly"      # 每周检查一次
+      day: "monday"           # 周一检查
+      time: "09:00"           # 上午9点
+    open-pull-requests-limit: 10  # 最多同时打开10个PR
+    reviewers:                # 指定审查者
+      - "jasmine661"
+    assignees:                # 指定负责人
+      - "jasmine661"
+    commit-message:           # 提交信息格式
+      prefix: "chore"         # 前缀
+      include: "scope"        # 包含作用域
+    labels:                   # 添加标签
+      - "dependencies"        # 依赖相关
+      - "javascript"          # JavaScript 相关
+    
+  # 配置 GitHub Actions 更新
+  - package-ecosystem: "github-actions"  # GitHub Actions 生态系统
+    directory: "/"                       # 监控根目录
+    schedule:
+      interval: "weekly"                 # 每周检查一次
+      day: "monday"                      # 周一检查
+      time: "09:00"                      # 上午9点
+    open-pull-requests-limit: 5          # 最多同时打开5个PR
+    reviewers:                           # 指定审查者
+      - "jasmine661"
+    assignees:                           # 指定负责人
+      - "jasmine661"
+    commit-message:                      # 提交信息格式
+      prefix: "ci"                       # 前缀
+      include: "scope"                   # 包含作用域
+    labels:                              # 添加标签
+      - "dependencies"                   # 依赖相关
+      - "github-actions"                 # GitHub Actions 相关

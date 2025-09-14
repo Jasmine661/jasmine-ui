@@ -1,0 +1,79 @@
+# GitHub Pages 部署工作流
+# 这个文件将 Storybook 构建并部署到 GitHub Pages
+
+name: Deploy Storybook to GitHub Pages
+
+# 触发条件
+on:
+  push:
+    branches: [ main ]  # 推送到 main 分支时触发
+  workflow_dispatch:    # 手动触发
+
+# 设置权限：GitHub Pages 需要这些权限
+permissions:
+  contents: read    # 读取仓库内容
+  pages: write      # 写入 GitHub Pages
+  id-token: write   # 写入身份令牌
+
+# 并发控制：确保同一时间只有一个 Pages 部署
+concurrency:
+  group: "pages"                    # 同一组
+  cancel-in-progress: false         # 不取消正在进行的部署
+
+# 定义任务
+jobs:
+  # 第一个任务：构建 Storybook
+  build:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    
+    steps:
+    # 步骤1：检出代码
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    # 步骤2：设置 Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    # 步骤3：安装 pnpm
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 8
+        
+    # 步骤4：安装依赖
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      
+    # 步骤5：构建 Storybook 静态文件
+    - name: Build Storybook
+      run: pnpm run build-storybook
+      
+    # 步骤6：配置 GitHub Pages
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    # 步骤7：上传构建产物
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: storybook-static  # Storybook 构建输出目录
+
+  # 第二个任务：部署到 GitHub Pages
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: build  # 依赖构建任务完成
+    environment:
+      name: github-pages                    # 环境名称
+      url: ${{ steps.deployment.outputs.page_url }}  # 部署后的 URL
+      
+    steps:
+    # 步骤1：部署到 GitHub Pages
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
