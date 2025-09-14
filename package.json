@@ -29,6 +29,7 @@
   "eslintConfig": {
     "extends": "./eslint-config-jasmine-ui.js"
   },
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build && pnpm run build:types && pnpm run build:css",
@@ -64,6 +65,7 @@
     "async-validator": "^4.2.5",
     "axios": "^1.10.0",
     "classnames": "^2.5.1",
+    "jasmine661-ui": "link:",
     "lodash-es": "^4.17.21",
     "normalize.css": "^8.0.1",
     "react-transition-group": "^4.4.5"

@@ -26,6 +26,9 @@ importers:
       classnames:
         specifier: ^2.5.1
         version: 2.5.1
+      jasmine661-ui:
+        specifier: 'link:'
+        version: 'link:'
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
