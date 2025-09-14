@@ -1,6 +1,6 @@
 {
   "name": "jasmine661-ui",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A React component library",
   "main": "dist/jasmine-ui.umd.js",
   "module": "dist/jasmine-ui.es.js",
@@ -100,8 +100,8 @@
     "jsdom": "^26.1.0",
     "playwright": "^1.53.1",
     "prettier": "^3.5.3",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "rimraf": "^6.0.1",
     "sass": "^1.89.1",
     "storybook": "9.0.12",
