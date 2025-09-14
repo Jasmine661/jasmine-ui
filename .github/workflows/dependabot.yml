@@ -29,7 +29,7 @@ jobs:
 
     # 步骤3：再设置 Node.js 和缓存
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v5
       with:
         node-version: '20'
         cache: 'pnpm'
