@@ -1,20 +1,20 @@
-# Jasmine UI
+# Jasmine661 UI
 
 一个基于 React + TypeScript 的现代化 UI 组件库。
 
 ## 安装
 
 ```bash
-npm install jasmine-ui
+npm install jasmine661-ui
 # 或
-pnpm add jasmine-ui
+pnpm add jasmine661-ui
 ```
 
 ## 使用
 
 ```tsx
-import { Button, Alert, Input } from 'jasmine-ui'
-import 'jasmine-ui/dist/jasmine-ui.css'
+import { Button, Alert, Input } from 'jasmine661-ui'
+import 'jasmine661-ui/dist/jasmine661-ui.css'
 
 function App() {
   return (
@@ -29,15 +29,15 @@ function App() {
 
 ## ESLint 配置
 
-使用 jasmine-ui 的 ESLint 配置：
+使用 jasmine661-ui 的 ESLint 配置：
 
 ```bash
 # 安装依赖
 npm install --save-dev eslint @eslint/js globals eslint-plugin-react-hooks eslint-plugin-react-refresh typescript-eslint
 
 # 配置 eslint.config.js
-import jasmineConfig from 'jasmine-ui/eslint-config-jasmine-ui.js'
-export default jasmineConfig
+import jasmine661Config from 'jasmine661-ui/eslint-config-jasmine661-ui.js'
+export default jasmine661Config
 ```
 
 详细配置说明请查看 [ESLINT.md](./ESLINT.md)

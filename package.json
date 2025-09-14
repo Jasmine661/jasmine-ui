@@ -1,6 +1,6 @@
 {
-  "name": "jasmine-ui-661",
-  "version": "1.0.0",
+  "name": "jasmine661-ui",
+  "version": "1.0.1",
   "description": "A React component library",
   "main": "dist/jasmine-ui.umd.js",
   "module": "dist/jasmine-ui.es.js",
