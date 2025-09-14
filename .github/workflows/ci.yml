@@ -20,46 +20,39 @@ on:
 jobs:
   # 第一个任务：测试和代码检查
   test:
-    name: Test & Lint
-    runs-on: ubuntu-latest  # 在 Ubuntu 最新版本上运行
+  name: Test & Lint
+  runs-on: ubuntu-latest
+  strategy:
+    matrix:
+      node-version: [18, 20]
+  
+  steps:
+  - name: Checkout code
+    uses: actions/checkout@v4
     
-    # 矩阵策略：在多个 Node.js 版本上并行运行测试
-    strategy:
-      matrix:
-        node-version: [18, 20]  # 测试 Node.js 18 和 20 版本
+  # 先安装 pnpm
+  - name: Setup pnpm
+    uses: pnpm/action-setup@v2
+    with:
+      version: 10.9.0
+      
+  # 然后设置 Node.js 和缓存
+  - name: Setup Node.js ${{ matrix.node-version }}
+    uses: actions/setup-node@v4
+    with:
+      node-version: ${{ matrix.node-version }}
+      cache: 'pnpm'
+      cache-dependency-path: 'pnpm-lock.yaml'
+      
+  - name: Install dependencies
+    run: pnpm install --frozen-lockfile
     
-    # 执行步骤
-    steps:
-    # 步骤1：检出代码到运行器
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    # 步骤2：安装 pnpm 包管理器
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 10.9.0
-        
-    # 步骤3：设置指定版本的 Node.js
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-        cache-dependency-path: 'pnpm-lock.yaml'  # 指定 pnpm 锁定文件路径
-        
-    # 步骤4：安装项目依赖
-    - name: Install dependencies
-      run: pnpm install   # 使用锁文件确保依赖版本一致
-      
-    # 步骤5：运行 ESLint 代码检查
-    - name: Run linting
-      run: pnpm run lint
-      
-    # 步骤6：运行单元测试
-    - name: Run tests
-      run: pnpm run test:nowatch
-
+  - name: Run linting
+    run: pnpm run lint
+    
+  - name: Run tests
+    run: pnpm run test:nowatch
+    
   # 第二个任务：构建和发布到 npm
   build-and-publish:
     name: Build & Publish
