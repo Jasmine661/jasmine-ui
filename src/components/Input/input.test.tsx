@@ -60,10 +60,11 @@ describe('Input 组件测试', () => {
     expect(wrapperElement).toHaveClass('is-disabled')
   })
 
-  test('当有 prepend 或 append 时应该应用 input-group 样式', () => {
+  test('当有 prepend 或 append 时应该应用相应的样式类', () => {
     render(<Input {...testProps} placeholder="请输入内容" />)
     const wrapperElement = screen.getByPlaceholderText('请输入内容').closest('.jasmine-input-wrapper')
-    expect(wrapperElement).toHaveClass('input-group')
+    expect(wrapperElement).toHaveClass('input-group-prepend')
+    expect(wrapperElement).toHaveClass('input-group-append')
   })
 
   test('onChange 事件应该正确触发', () => {

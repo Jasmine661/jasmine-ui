@@ -8,7 +8,7 @@ import '../../styles/index.scss'
 import type { CustomRule } from './useStore'
 
 const meta: Meta<typeof Form> = {
-  title: 'Form',
+  title: 'Components/Form',
   component: Form,
   argTypes: {
     onFinish: {
@@ -41,6 +41,7 @@ const confirmRule: CustomRule[] = [
 ]
 
 export const BasicForm: Story = {
+  name: 'BasicForm',
   render: (args) => {
     const ref = useRef<IFormRef>(null)
     const resetAll = () => {

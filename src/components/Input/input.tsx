@@ -20,7 +20,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   // 根据属性计算className
   const className = classNames('jasmine-input-wrapper', size && `input-size-${size}`, {
     'is-disabled': disabled,
-    'input-group': append || prepend,
     'input-group-append': !!append, // 双重取反，有值则为true，无值为false
     'input-group-prepend': !!prepend,
   })

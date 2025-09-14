@@ -33,8 +33,8 @@ export default defineConfig({
         }
       }
     },
-    // 构建前清理
-    emptyOutDir: true,
+    // 增量构建：只清理 JS 文件，保留其他文件
+    emptyOutDir: false,
     // 输出目录
     outDir: 'dist'
   },
