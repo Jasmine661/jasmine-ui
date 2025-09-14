@@ -31,20 +31,21 @@ jobs:
     # 步骤1：检出代码
     - name: Checkout code
       uses: actions/checkout@v4
+
+    # 步骤3：安装 pnpm
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 10.9.0
       
-    # 步骤2：设置 Node.js
+    # 步骤3：设置 Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'pnpm'
         cache-dependency-path: 'pnpm-lock.yaml'
-        
-    # 步骤3：安装 pnpm
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 10.9.0
+      
         
     # 步骤4：安装依赖
     - name: Install dependencies
