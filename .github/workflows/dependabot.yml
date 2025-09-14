@@ -21,18 +21,19 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    # 步骤2：设置 Node.js
+    # 步骤2：先安装 pnpm
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4  # 建议使用 v2，更稳定
+      with:
+        version: 10.9.0
+
+    # 步骤3：再设置 Node.js 和缓存
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
-        
-    # 步骤3：安装 pnpm
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4
-      with:
-        version: 8
+        cache: 'pnpm'
+        cache-dependency-path: 'pnpm-lock.yaml'
         
     # 步骤4：安装依赖
     - name: Install dependencies
