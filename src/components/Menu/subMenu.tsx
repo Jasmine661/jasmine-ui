@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react'
+import React, { useContext, useState, useRef, useMemo } from 'react'
 import classNames from 'classnames'
 import MenuContext from './menuContext'
 import type { MenuItemProps } from './menuItem'
@@ -30,7 +30,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
   const subMenuRef = useRef<HTMLLIElement>(null)
   useClickOutside(subMenuRef, () => setIsOpen(false))
 
-  const renderChildren = () => {
+  const renderChildren = useMemo(() => {
     // React.Children.map会自动处理children，从而得到每个child的索引i
     const childrenComponents = React.Children.map(children, (child, i) => {
       const childElement = child as React.ReactElement<MenuItemProps>
@@ -52,7 +52,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
         {childrenComponents}
       </Transition>
     )
-  }
+  },[children, index, isOpen])
 
   const handlerClick = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -83,7 +83,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
         {title}
         <Icon icon="chevron-down" theme="primary" className="arrow-icon" size="sm" />
       </div>
-      {renderChildren()}
+      {renderChildren}
     </li>
   )
 }

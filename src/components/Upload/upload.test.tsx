@@ -78,6 +78,45 @@ describe('Upload 组件测试', () => {
     }
   })
 
+  
+  test('应该正确处理拖拽上传', async () => {
+    const onChangeMock = vi.fn()
+    const onSuccessMock = vi.fn()
+    const dragProps: UploadProps = {
+      action: 'https://jsonplaceholder.typicode.com/posts',
+      drag: true,
+      onChange: onChangeMock,
+      onSuccess: onSuccessMock,
+    }
+    
+    render(<Upload {...dragProps} />)
+    
+    // 查找拖拽区域
+    const dragger = screen.getByText('拖拽文件到此上传')
+    expect(dragger).toBeInTheDocument()
+    
+    // 创建模拟的 dataTransfer 对象
+    const mockDataTransfer = {
+      files: [mockFile],
+      dropEffect: 'copy',
+      setData: vi.fn(),
+      getData: vi.fn(),
+    }
+    
+    // 模拟拖拽过程
+    fireEvent.dragOver(dragger, { dataTransfer: mockDataTransfer })
+    fireEvent.drop(dragger, { dataTransfer: mockDataTransfer })
+    
+    // 验证上传成功
+    await waitFor(() => {
+      expect(onChangeMock).toHaveBeenCalled()
+    })
+    
+    await waitFor(() => {
+      expect(onSuccessMock).toHaveBeenCalledWith('success', mockFile)
+    })
+  })
+
   test('当 beforeUpload 返回 false 时应该阻止上传', async () => {
     const beforeUploadMock = vi.fn().mockReturnValue(false)
     const onChangeMock = vi.fn()

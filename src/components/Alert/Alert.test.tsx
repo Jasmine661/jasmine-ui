@@ -17,24 +17,27 @@ const testProps: AlertProps = {
 
 describe('Alert 组件测试', () => {
   test('应该正确渲染默认的 Alert', () => {
-    render(<Alert {...defaultProps} />)
+    render(<Alert {...defaultProps} description='这是一个默认的提示信息' />)
     const alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
     expect(alertElement).toBeInTheDocument()
     expect(alertElement).toHaveClass('alert')
   })
 
-  test('应该根据不同的 type 属性渲染不同的样式', () => {
-    const { rerender } = render(<Alert {...defaultProps} type="success" />)
-    let alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
-    expect(alertElement).toHaveClass('alert-success')
+  test('应该根据不同的 type 属性渲染不同的样式', async () => {
+    // 测试 success 类型
+    render(<Alert {...defaultProps} type="success"  description='这是一个成功的提示信息' />)
+    const successAlertElement = screen.getByText('这是一个成功的提示信息').closest('.alert')
+    expect(successAlertElement).toHaveClass('alert-success')
 
-    rerender(<Alert {...defaultProps} type="warning" />)
-    alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
-    expect(alertElement).toHaveClass('alert-warning')
+    // 测试 warning 类型
+    render(<Alert {...defaultProps} type="warning" description='这是一个警告的提示信息' />)
+    const warningAlertElement = screen.getByText('这是一个警告的提示信息').closest('.alert')
+    expect(warningAlertElement).toHaveClass('alert-warning')
 
-    rerender(<Alert {...defaultProps} type="error" />)
-    alertElement = screen.getByText('这是一个默认的提示信息').closest('.alert')
-    expect(alertElement).toHaveClass('alert-error')
+    // 测试 error 类型
+    render(<Alert {...defaultProps} type="error" description='这是一个错误的提示信息' />)
+    const errorAlertElement = screen.getByText('这是一个错误的提示信息').closest('.alert')
+    expect(errorAlertElement).toHaveClass('alert-error')
   })
 
   test('应该正确渲染标题和描述', () => {

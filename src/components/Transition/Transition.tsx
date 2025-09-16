@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import type { ElementType } from 'react'
 
 type AnimationName = 'zoom-in-top' | 'zoom-in-left' | 'zoom-in-right' | 'zoom-in-bottom'
@@ -20,7 +20,8 @@ export interface TransitionProps {
   wrapper?: boolean
 }
 
-const Transition: React.FC<TransitionProps> = (props) => {
+// 使用 memo 进行浅比较优化
+const Transition = memo<TransitionProps>((props) => {
   const {
     animation = 'zoom-in-top', // 动画类型，决定类名前缀
     classNames = animation,
@@ -42,52 +43,102 @@ const Transition: React.FC<TransitionProps> = (props) => {
   // 控制当前动画状态
   const [status, setStatus] = useState<AnimationStatus>(inProp ? 'enter' : 'exit')
 
-  // 控制动画的核心逻辑
+  // 添加防抖逻辑，
+  const [debouncedInProp, setDebouncedInProp] = useState(inProp)
+
   useEffect(() => {
-    let enterTimer: number | undefined
-    let doneTimer: number | undefined
-    if (inProp) {
-      // inProp为true，显示动画流程
-      setIsVisible(true) // 显示元素
-      setStatus('enter') // 设置状态为准备进入
-      onEnter?.() // 调用onEnter钩子
-      // enterTimer = window.setTimeout(() => setStatus('enter'), 30)
-      // 进入动画开始，强制让浏览器渲染一次enter状态，避免闪烁
-      doneTimer = window.setTimeout(() => {
-        setStatus('enter-active') // 进入动画后
-        onEntered?.()
+    const timer = setTimeout(() => {
+      setDebouncedInProp(inProp)
+    }, 16) // 一帧的时间
+
+    return () => clearTimeout(timer)
+  }, [inProp])
+
+  // 使用 useCallback 缓存回调函数
+  const handleEnter = useCallback(() => {
+    onEnter?.()
+  }, [onEnter])
+
+  const handleEntered = useCallback(() => {
+    onEntered?.()
+  }, [onEntered])
+
+  const handleExit = useCallback(() => {
+    onExit?.()
+  }, [onExit])
+
+  const handleExited = useCallback(() => {
+    onExited?.()
+  }, [onExited])
+
+  // 使用防抖后的值
+  useEffect(() => {
+    // 进入动画逻辑
+    if (debouncedInProp) {
+      setIsVisible(true)
+      setStatus('enter')
+      handleEnter()
+    }
+  }, [debouncedInProp, handleEnter])
+
+  useEffect(() => {
+    // 进入动画逻辑
+    if (debouncedInProp && isVisible) {
+      const timer = window.setTimeout(() => {
+        setStatus('enter-active')
+        handleEntered()
       }, timeout)
-    } else if (isVisible) {
-      // inProp为false，隐藏动画流程
-      setStatus('exit') // 设置状态为准备退出
-      onExit?.() // 调用onExit钩子
-      // enterTimer = window.setTimeout(() => {
-      //   setStatus('exit-active') // 退出动画开始
-      // }, 30)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [debouncedInProp, isVisible, timeout, handleEntered])
+
+  useEffect(() => {
+    // 退出动画逻辑
+    if (!debouncedInProp && isVisible) {
+      setStatus('exit')
+      handleExit()
       setStatus('exit-active')
-      doneTimer = window.setTimeout(() => {
-        setIsVisible(false) // 隐藏元素
-        onExited?.()
+      
+      const timer = window.setTimeout(() => {
+        setIsVisible(false)
+        handleExited()
       }, timeout)
+      
+      return () => clearTimeout(timer)
     }
+  }, [debouncedInProp, isVisible, timeout, handleExit, handleExited])
 
-    // 组件卸载时，清除定时器
-    return () => {
-      if (enterTimer) clearTimeout(enterTimer)
-      if (doneTimer) clearTimeout(doneTimer)
+  const className = useMemo(() => {
+    return `${classNames} ${animation}-${status}`
+  }, [classNames, animation, status])
+
+  const renderedChildren = useMemo(() => {
+    if (wrapper) {
+      return <div>{children}</div>
     }
-  }, [inProp, isVisible, timeout, onEnter, onEntered, onExit, onExited])
+    return children
+  }, [wrapper, children])
 
-  if (!isVisible) return null
+  if (!isVisible) return null 
 
   const Tag = tag as ElementType
-  
+
   return (
-    <Tag className={`${classNames} ${animation}-${status}`} {...restProps}>
-      {wrapper ? <div>{children}</div> : children}
+    <Tag className={className} {...restProps}>
+      {renderedChildren}
     </Tag>
   )
-}
+}, (prevProps, nextProps) => {
+  // 自定义比较函数
+  return (
+    prevProps.in === nextProps.in &&
+    prevProps.timeout === nextProps.timeout &&
+    prevProps.animation === nextProps.animation &&
+    prevProps.classNames === nextProps.classNames &&
+    prevProps.wrapper === nextProps.wrapper
+  )
+})
 
 Transition.displayName = 'Transition'
 

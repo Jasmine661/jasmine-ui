@@ -1,8 +1,8 @@
 // src/menu/Menu.tsx
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import MenuContext from './menuContext'
-import type { MenuContextProps, SelectCallback } from './menuContext'
+import type { SelectCallback } from './menuContext'
 import type { MenuItemProps } from './menuItem'
 import type MenuItem from './menuItem'
 
@@ -38,22 +38,22 @@ const Menu: React.FC<MenuProps> = (props) => {
   // 当前激活项的index
   const [currentActive, setActive] = useState(defaultIndex)
 
-  const handleSelect = (index: string) => {
+  const handleSelect = useCallback((index: string) => {
     setActive(index)
     if (onSelectProp) {
       onSelectProp(index)
     }
-  }
+  },[onSelectProp])
 
-  const passedContext: MenuContextProps = {
+  const passedContext = useMemo(() => ({
     index: currentActive,
     onSelect: handleSelect,
     mode,
     defaultOpenSubMenus,
-  }
+  }),[currentActive, handleSelect, mode, defaultOpenSubMenus])
 
   // 确保子组件是MenuItem或SubMenu
-  const renderChildren = () => {
+  const renderChildren = useMemo(() => {
     return React.Children.map(children, (child, index) => {
       const childElement = child as React.ReactElement<MenuItemProps, typeof MenuItem>
 
@@ -66,11 +66,11 @@ const Menu: React.FC<MenuProps> = (props) => {
         return null
       }
     })
-  }
+  },[children])
 
   return (
     <ul className={classes} style={style} data-testid="menu">
-      <MenuContext.Provider value={passedContext}>{renderChildren()}</MenuContext.Provider>
+      <MenuContext.Provider value={passedContext}>{renderChildren}</MenuContext.Provider>
     </ul>
   )
 }

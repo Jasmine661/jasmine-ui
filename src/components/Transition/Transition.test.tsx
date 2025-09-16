@@ -80,44 +80,54 @@ describe('Transition 组件测试', () => {
     })
   })
 
-  test('应该正确调用生命周期钩子', async () => {
-    const onEnterMock = vi.fn()
-    const onEnteredMock = vi.fn()
-    
-    const { rerender } = render(
-      <Transition {...testProps} onEnter={onEnterMock} onEntered={onEnteredMock} />
-    )
-    
-    // 从 false 变为 true
-    rerender(
-      <Transition {...testProps} in={true} onEnter={onEnterMock} onEntered={onEnteredMock} />
-    )
-    
-    expect(onEnterMock).toHaveBeenCalled()
-    
-    await waitFor(() => {
-      expect(onEnteredMock).toHaveBeenCalled()
-    }, { timeout: 600 })
-  })
+  // 修复 Transition 测试
+test('应该正确调用生命周期钩子', async () => {
+  const onEnterMock = vi.fn()
+  const onEnteredMock = vi.fn()
+  
+  const { rerender } = render(
+    <Transition {...defaultProps} onEnter={onEnterMock} onEntered={onEnteredMock} />
+  )
+  
+  // 从 true 变为 false，再变回 true 来触发进入动画
+  rerender(
+    <Transition {...defaultProps} in={false} onEnter={onEnterMock} onEntered={onEnteredMock} />
+  )
+  
+  // 再变回 true 触发进入动画
+  rerender(
+    <Transition {...defaultProps} in={true} onEnter={onEnterMock} onEntered={onEnteredMock} />
+  )
+  
+  expect(onEnterMock).toHaveBeenCalled()
+  
+  await waitFor(() => {
+    expect(onEnteredMock).toHaveBeenCalled()
+  }, { timeout: 600 })
+})
 
   test('应该正确处理退出动画的生命周期钩子', async () => {
     const onExitMock = vi.fn()
     const onExitedMock = vi.fn()
     
+    // 先渲染为 true，然后变为 false 来触发退出动画
     const { rerender } = render(
-      <Transition {...defaultProps} onExit={onExitMock} onExited={onExitedMock} />
+      <Transition {...defaultProps} in={true} onExit={onExitMock} onExited={onExitedMock} />
     )
     
-    // 从 true 变为 false
+    // 变为 false 触发退出动画
     rerender(
       <Transition {...defaultProps} in={false} onExit={onExitMock} onExited={onExitedMock} />
     )
     
-    expect(onExitMock).toHaveBeenCalled()
+    // 等待防抖完成和退出动画触发
+    await waitFor(() => {
+      expect(onExitMock).toHaveBeenCalled()
+    }, { timeout: 100 })
     
     await waitFor(() => {
       expect(onExitedMock).toHaveBeenCalled()
-    }, { timeout: 300 })
+    }, { timeout: 500 })
   })
 
   test('应该正确处理自定义超时时间', async () => {

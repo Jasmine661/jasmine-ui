@@ -110,7 +110,7 @@ function App() {
         <TabsItem label="Tab 2">Tab 2</TabsItem>
         <TabsItem label="Tab 3">Tab 3</TabsItem>
       </Tabs>
-      {/* 测试菜单 */}
+      {/* 测试Menu */}
       <div>
         <Menu
           onSelect={(index) => {

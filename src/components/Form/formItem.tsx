@@ -116,6 +116,7 @@ const FormItem: FC<FormItemProps> = (props) => {
       })
     }
   }, [dispatch, label, name, valuePropName, rules, initialValues, fields])
+  
   return (
     <div className={rowClass}>
       {label && (
