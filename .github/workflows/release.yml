@@ -103,7 +103,7 @@ jobs:
         
     # 步骤11：创建 Pull Request
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: "chore: release v${{ env.NEW_VERSION }}"  # 提交信息
