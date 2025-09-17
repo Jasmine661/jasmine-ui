@@ -8,7 +8,8 @@
   "files": [
     "dist",
     "eslint-config-jasmine-ui.js",
-    "ESLINT.md"
+    "ESLINT.md",
+    "README.md"
   ],
   "keywords": [
     "react",
@@ -34,6 +35,8 @@
     "dev": "vite",
     "build": "vite build && pnpm run build:types && pnpm run build:css",
     "build:parallel": "pnpm run build:types & pnpm run build:css & vite build",
+    "build:analyze": "vite build --mode analyze",
+    "build:prod": "cross-env NODE_ENV=production vite build && pnpm run build:types && pnpm run build:css",
     "lint": "eslint --ext js,ts,tsx src --max-warnings 5",
     "lint:fix": "eslint --ext js,ts,tsx src --fix",
     "lint:check": "eslint --ext js,ts,tsx src --max-warnings 0",
@@ -45,7 +48,7 @@
     "test:watch": "vitest --watch",
     "test:nowatch": "vitest run --no-watch ",
     "build:types": "tsc --p tsconfig.build.json",
-    "build:css": "sass src/styles/index.scss dist/jasmine-ui.css",
+    "build:css": "sass src/styles/index.scss dist/jasmine661-ui.css",
     "link": "pnpm link --global",
     "unlink": "pnpm unlink --global",
     "storybook": "storybook dev -p 6006",
@@ -65,7 +68,6 @@
     "async-validator": "^4.2.5",
     "axios": "^1.10.0",
     "classnames": "^2.5.1",
-    "jasmine661-ui": "link:",
     "lodash-es": "^4.17.21",
     "normalize.css": "^8.0.1",
     "react-transition-group": "^4.4.5"
@@ -105,6 +107,7 @@
     "rimraf": "^6.0.1",
     "sass": "^1.89.1",
     "storybook": "9.0.12",
+    "terser": "^5.44.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5",

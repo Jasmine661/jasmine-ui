@@ -91,11 +91,14 @@ export const BasicForm: Story = {
                 </span>
               </div>
             </Item>
-            <div className="jasmine-form-submit-area">
-              <Button type="submit">
-                提交 {isSubmitting ? '验证中' : '验证完毕'} {isValid ? '通过😄' : '没通过😢'}
-              </Button>
-              <Button type="button" onClick={resetAll}>重置</Button>
+            <div className="jasmine-row">
+              <div className="jasmine-form-item-label" />
+              <div className="jasmine-form-item">
+                <div className="jasmine-form-submit-area">
+                  <Button type="submit">提交 {isSubmitting ? '验证中' : '验证完毕'} {isValid ? '通过😄' : '没通过😢'}</Button>
+                  <Button type="button" onClick={resetAll}>重置</Button>
+                </div>
+              </div>
             </div>
           </>
         )}
@@ -114,7 +117,7 @@ export const LoginForm: Story = {
         <Input type="password" placeholder="请输入密码" />
       </Item>
       <Item name="login">
-        <Button type="submit" style={{ width: '100%' }}>
+        <Button type="submit" style={{ width: '30%' }}>
           登录
         </Button>
       </Item>

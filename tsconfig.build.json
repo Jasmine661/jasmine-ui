@@ -23,8 +23,28 @@
         // 跳过库检查
         "skipLibCheck": true,
         // 允许导入 TS 扩展名
-        "allowImportingTsExtensions": false
+        "allowImportingTsExtensions": false,
+        // 生成 source map
+        "sourceMap": true,
+        // 移除注释
+        "removeComments": true,
+        // 生成声明文件的 source map
+        "declarationMap": true,
+        // 确保类型检查
+        "noEmitOnError": true,
+        // 解析路径
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        }
     },
     "include": ["src/**/*"],
-    "exclude": ["src/**/*.stories.tsx", "src/**/*.test.tsx", "src/main.tsx", "src/App.tsx"]
+    "exclude": [
+        "src/**/*.stories.tsx", 
+        "src/**/*.test.tsx", 
+        "src/main.tsx", 
+        "src/App.tsx",
+        "src/setupTests.ts",
+        "src/vite-env.d.ts"
+    ]
 }

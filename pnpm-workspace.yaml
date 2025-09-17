@@ -1,0 +1,2 @@
+overrides:
+  jasmine661-ui: link:../../../../AppData/Local/pnpm/global/5/node_modules/jasmine661-ui

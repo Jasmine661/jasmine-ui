@@ -24,6 +24,12 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     
+    # 添加权限配置
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+    
     steps:
     # 步骤1：检出代码（需要写权限来创建分支）
     - name: Checkout code
@@ -59,8 +65,8 @@ jobs:
     # 步骤7：更新版本号
     - name: Bump version
       run: |
-        # 使用 npm version 命令更新 package.json 中的版本号
-        npm version ${{ github.event.inputs.version_type }} --no-git-tag-version
+        # 使用 pnpm version 命令更新 package.json 中的版本号
+        pnpm version ${{ github.event.inputs.version_type }} --no-git-tag-version
         # 将新版本号保存到环境变量中
         echo "NEW_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
         
@@ -68,13 +74,40 @@ jobs:
     - name: Build package
       run: pnpm run build
       
-    # 步骤9：创建 Pull Request
+    # 步骤9：发布到npm
+    - name: Publish to npm
+      run: npm publish
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
+    # 步骤10：创建GitHub Release
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ env.NEW_VERSION }}
+        release_name: Release v${{ env.NEW_VERSION }}
+        body: |
+          ## Release v${{ env.NEW_VERSION }}
+          
+          This release has been automatically published to npm.
+          
+          ### Changes
+          - Version bumped to ${{ env.NEW_VERSION }}
+          - All tests passed
+          - Build completed successfully
+          - Published to npm registry
+        draft: false
+        prerelease: false
+        
+    # 步骤11：创建 Pull Request
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "chore: bump version to v${{ env.NEW_VERSION }}"  # 提交信息
-        title: "Release v${{ env.NEW_VERSION }}"                          # PR 标题
+        commit-message: "chore: release v${{ env.NEW_VERSION }}"  # 提交信息
+        title: "Release v${{ env.NEW_VERSION }}"                  # PR 标题
         body: |
           ## Release v${{ env.NEW_VERSION }}
           
@@ -84,9 +117,10 @@ jobs:
           - Version bumped to ${{ env.NEW_VERSION }}
           - All tests passed
           - Build completed successfully
+          - Published to npm registry
           
           ### Next Steps
           - Review and merge this PR
-          - The release will be automatically published to npm
+          - The release has been published to npm
         branch: release/v${{ env.NEW_VERSION }}  # 创建新分支
         delete-branch: true                     # 合并后删除分支

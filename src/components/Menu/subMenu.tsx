@@ -11,6 +11,7 @@ export interface SubMenuProps {
   title: string
   className?: string
   children?: React.ReactNode
+  style?: React.CSSProperties
 }
 
 const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) => {

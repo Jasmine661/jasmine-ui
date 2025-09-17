@@ -6,6 +6,8 @@
     display: flex;
     align-items: center;
     margin-bottom: 25px;
+    flex-basis: 30%;
+
     &.jasmine-row-no-label {
       // 将一行内的两个块级顺序反转
       flex-direction: row-reverse;
@@ -63,8 +65,8 @@
     }
   }
   .jasmine-form-submit-area {
+    gap: 10px;
     display: flex;
     align-items: center;
-    justify-content: center;
   }
 }

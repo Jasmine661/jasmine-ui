@@ -1,8 +1,8 @@
 import type { Meta, StoryFn } from '@storybook/react-vite'
 import { Upload } from './upload'
 import type { UploadProps } from './upload'
-import Icon from '../Icons/icon'
-
+import Button from '../Button'
+import Icon from '../Icons'
 const meta: Meta<typeof Upload> = {
   title: 'Components/Upload',
   component: Upload,
@@ -53,10 +53,13 @@ const Template: StoryFn<UploadProps> = (args) => <Upload {...args} />
 export const Default = Template.bind({})
 Default.args = {
   action: 'https://httpbin.org/post',
+  children: <Button btnType='primary'>上传文件</Button>,
 }
 
 export const WithCallbacks = Template.bind({})
+
 WithCallbacks.args = {
+  children: <Button btnType='primary'>上传文件</Button>,
   action: 'https://httpbin.org/post',
   onProgress: (percentage, file) => {
     console.log(`上传进度: ${percentage}%, 文件: ${file.name}`)
@@ -80,7 +83,7 @@ export const Demo = () => (
     }}
   >
     <h3>文件上传组件演示</h3>
-    <Upload action="https://httpbin.org/post" />
+    <Upload action="https://httpbin.org/post"><Button btnType='primary'>上传文件</Button></Upload>
     <p style={{ color: '#666', fontSize: '14px' }}>点击按钮选择文件进行上传</p>
     <p>测试2</p>
     <Upload
@@ -92,7 +95,7 @@ export const Demo = () => (
       multiple
       drag
     >
-      <Icon icon="upload" size="5x" />
+      <Icon icon='upload' size='5x'></Icon>      
     </Upload>
   </div>
 )
