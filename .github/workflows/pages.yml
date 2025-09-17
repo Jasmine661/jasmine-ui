@@ -30,7 +30,7 @@ jobs:
     steps:
     # 步骤1：检出代码
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     # 步骤3：安装 pnpm
     - name: Setup pnpm

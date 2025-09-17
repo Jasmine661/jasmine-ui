@@ -33,7 +33,7 @@ jobs:
     steps:
     # 步骤1：检出代码（需要写权限来创建分支）
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         token: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub 令牌
         

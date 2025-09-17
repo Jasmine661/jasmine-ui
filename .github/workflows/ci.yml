@@ -28,7 +28,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       
     # 先安装 pnpm
     - name: Setup pnpm
@@ -62,7 +62,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       
     - name: Setup pnpm
       uses: pnpm/action-setup@v2
@@ -106,7 +106,7 @@ jobs:
     steps:
     # 步骤1：检出代码
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       
     # 先安装 pnpm
     - name: Setup pnpm
