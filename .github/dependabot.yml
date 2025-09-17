@@ -7,7 +7,7 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "09:00"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5  # 减少PR数量
     reviewers:
       - "Jasmine661"
     assignees:
@@ -15,10 +15,9 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
-    # 允许的依赖更新
+    # 只允许直接依赖更新，避免间接依赖冲突
     allow:
       - dependency-type: "direct"
-      - dependency-type: "indirect"
     # 忽略的依赖更新
     ignore:
       # 忽略 FontAwesome 大版本更新，避免破坏性变更
@@ -29,6 +28,19 @@ updates:
         update-types: ["version-update:semver-major"]
       # 忽略 jsdom 大版本更新
       - dependency-name: "jsdom"
+        update-types: ["version-update:semver-major"]
+      # 忽略 React 大版本更新
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      # 忽略 TypeScript 大版本更新
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # 忽略 Storybook 大版本更新
+      - dependency-name: "@storybook/*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "storybook"
         update-types: ["version-update:semver-major"]
     # 分组更新
     groups:
