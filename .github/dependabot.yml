@@ -1,44 +1,66 @@
-# Dependabot 配置文件
-# 这个文件配置 Dependabot 自动更新依赖
-
-version: 2  # 配置文件版本
-
-# 定义更新规则
+version: 2
 updates:
-  # 配置 npm 依赖更新
-  - package-ecosystem: "npm"  # 包管理器类型
-    directory: "/"            # 监控根目录
+  # 更新 npm 依赖
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: "weekly"      # 每周检查一次
-      day: "monday"           # 周一检查
-      time: "09:00"           # 上午9点
-    open-pull-requests-limit: 10  # 最多同时打开10个PR
-    reviewers:                # 指定审查者
-      - "jasmine661"
-    assignees:                # 指定负责人
-      - "jasmine661"
-    commit-message:           # 提交信息格式
-      prefix: "chore"         # 前缀
-      include: "scope"        # 包含作用域
-    labels:                   # 添加标签
-      - "dependencies"        # 依赖相关
-      - "javascript"          # JavaScript 相关
-    
-  # 配置 GitHub Actions 更新
-  - package-ecosystem: "github-actions"  # GitHub Actions 生态系统
-    directory: "/"                       # 监控根目录
-    schedule:
-      interval: "weekly"                 # 每周检查一次
-      day: "monday"                      # 周一检查
-      time: "09:00"                      # 上午9点
-    open-pull-requests-limit: 5          # 最多同时打开5个PR
-    reviewers:                           # 指定审查者
-      - "jasmine661"
-    assignees:                           # 指定负责人
-      - "jasmine661"
-    commit-message:                      # 提交信息格式
-      prefix: "ci"                       # 前缀
-      include: "scope"                   # 包含作用域
-    labels:                              # 添加标签
-      - "dependencies"                   # 依赖相关
-      - "github-actions"                 # GitHub Actions 相关
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "Jasmine661"
+    assignees:
+      - "Jasmine661"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    # 允许的依赖更新
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    # 忽略的依赖更新
+    ignore:
+      # 忽略 FontAwesome 大版本更新，避免破坏性变更
+      - dependency-name: "@fortawesome/*"
+        update-types: ["version-update:semver-major"]
+      # 忽略 Vite 大版本更新
+      - dependency-name: "vite"
+        update-types: ["version-update:semver-major"]
+      # 忽略 jsdom 大版本更新
+      - dependency-name: "jsdom"
+        update-types: ["version-update:semver-major"]
+    # 分组更新
+    groups:
+      # 测试相关依赖
+      test-dependencies:
+        patterns:
+          - "@testing-library/*"
+          - "@vitest/*"
+          - "vitest"
+          - "playwright"
+          - "jsdom"
+      # Storybook 相关依赖
+      storybook-dependencies:
+        patterns:
+          - "@storybook/*"
+          - "@chromatic-com/storybook"
+          - "storybook"
+      # ESLint 相关依赖
+      eslint-dependencies:
+        patterns:
+          - "@eslint/*"
+          - "eslint*"
+          - "typescript-eslint"
+          - "globals"
+      # 类型定义依赖
+      type-dependencies:
+        patterns:
+          - "@types/*"
+      # 构建工具依赖
+      build-dependencies:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "sass"
+          - "terser"
