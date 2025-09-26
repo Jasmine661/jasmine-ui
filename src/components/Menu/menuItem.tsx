@@ -14,17 +14,18 @@ export interface MenuItemProps {
 const MenuItem: React.FC<MenuItemProps> = React.memo((props) => {
   const { index, disabled, className, children, style } = props
   const context = useContext(MenuContext)
+  const { index: activeIndex, onSelect } = context
   
   const classes = useMemo(() => classNames('menu-item', className, {
     'is-disabled': disabled,
-    'is-active': context.index === index,
-  }), [className, disabled, context.index, index])
+    'is-active': activeIndex === index,
+  }), [className, disabled, activeIndex, index])
 
   const handlerClick = useCallback(() => {
-    if (context.onSelect && !disabled && typeof index === 'string') {
-      context.onSelect(index)
+    if (onSelect && !disabled && typeof index === 'string') {
+      onSelect(index)
     }
-  }, [context.onSelect, disabled, index])
+  }, [onSelect, disabled, index])
 
   return (
     <li className={classes} style={style} onClick={handlerClick}>

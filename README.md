@@ -10,7 +10,7 @@
 - 组件完善：`Button / Input / Alert / Menu / Tabs / Progress / Transition / AutoComplete / Upload / Form / Icons` 等
 - 配套 ESLint 规则与 Storybook 用例、Vitest 单测
 
-## 🔍 亮点特点（详细）
+## 🔍 亮点特点（自卖自夸）
 
 - **强类型与开发体验**
   - 全量 TypeScript 编写，公共 API 全部导出类型（`dist/types`）。
