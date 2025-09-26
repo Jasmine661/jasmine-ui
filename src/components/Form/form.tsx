@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useMemo } from 'react'
+import { useImperativeHandle, useMemo, useCallback, forwardRef } from 'react'
 import type { ReactNode } from 'react'
 import './_style.scss'
 import useForm from './useForm'
@@ -18,24 +18,29 @@ export interface FormProps {
   onFinishFailed?: (values: Record<string,any>,errors: Record<string,ValidateError[]>) => void
 }
 
-const Form = (props: FormProps & { ref?: React.Ref<IFormRef> }) => {
-  const { ref, children, name, initialValues, onFinish, onFinishFailed } = props
-  const formData = useForm({
+const Form = forwardRef<IFormRef, FormProps>((props, ref) => {
+  const { children, name, initialValues, onFinish, onFinishFailed } = props
+  
+  // 使用 useMemo 缓存 useForm 的配置
+  const formConfig = useMemo(() => ({
     initialValues,
     onFinish,
     onFinishFailed
-  })
+  }), [initialValues, onFinish, onFinishFailed])
+  
+  const formData = useForm(formConfig)
   const { form, fields, dispatch, submitForm, validateField } = formData
   
-  useImperativeHandle(ref, () => {
+  useImperativeHandle(ref, useCallback(() => {
     return {
       ...formData,
       // 排除不需要暴露的属性
       form: undefined,
       fields: undefined
     }
-  })
+  }, [formData]))
 
+  // 使用 useMemo 缓存 Context 值，减少子组件重新渲染
   const passedContext = useMemo(() => ({
     dispatch,
     fields, 
@@ -43,19 +48,34 @@ const Form = (props: FormProps & { ref?: React.Ref<IFormRef> }) => {
     validateField
   }), [dispatch, fields, initialValues, validateField])
 
-  let childrenNode: ReactNode
-  if(typeof children === 'function') {
-    childrenNode = children(form)
-  }else {
-    childrenNode = children
-  }
+  // 使用 useMemo 缓存表单样式类名
+  const formClassName = useMemo(() => 'jasmine-form', [])
+
+  // 使用 useMemo 缓存子组件渲染
+  const childrenNode = useMemo(() => {
+    if(typeof children === 'function') {
+      return children(form)
+    }
+    return children
+  }, [children, form])
+
+  // 使用 useMemo 缓存表单属性
+  const formProps = useMemo(() => ({
+    name,
+    className: formClassName,
+    onSubmit: submitForm,
+    'data-testid': 'form'
+  }), [name, formClassName, submitForm])
+
   return (
-    <>
-      <form name={name} className="jasmine-form" onSubmit={submitForm} data-testid="form">
-        <FormContext.Provider value={passedContext}>{childrenNode}</FormContext.Provider>
-      </form>
-    </>
+    <form {...formProps}>
+      <FormContext.Provider value={passedContext}>
+        {childrenNode}
+      </FormContext.Provider>
+    </form>
   )
-}
+})
+
+Form.displayName = 'Form'
 
 export default Form

@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, useMemo } from 'react'
 import type { ChangeEvent, InputHTMLAttributes, ReactElement } from 'react'
 import type { IconProp } from '@fortawesome/fontawesome-svg-core'
 import classNames from 'classnames'
@@ -17,12 +17,13 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { size, append, prepend, disabled, icon, style, ...restProps } = props
-  // 根据属性计算className
-  const className = classNames('jasmine-input-wrapper', size && `input-size-${size}`, {
+  
+  // 根据属性计算className - 使用 useMemo 优化
+  const className = useMemo(() => classNames('jasmine-input-wrapper', size && `input-size-${size}`, {
     'is-disabled': disabled,
     'input-group-append': !!append, // 双重取反，有值则为true，无值为false
     'input-group-prepend': !!prepend,
-  })
+  }), [size, disabled, append, prepend])
 
   // 设置受控组件相关
   const fixControlledValue = (value: any) => {

@@ -82,19 +82,20 @@ function useStore(initialValues?: Record<string, any>) {
   const getFieldValue = useCallback((key: string) => {
     return fields[key]?.value
   }, [fields])
-  // 用于获取所有表单项的值 {'username': 'jasmine','password': '123456'}
-  const getFieldsValue = () => {
+  // 用于获取所有表单项的值 {'username': 'jasmine','password': '123456'} - 使用 useCallback 优化
+  const getFieldsValue = useCallback(() => {
     return mapValues(fields, field => field.value)
-  }
-  // 用于设置单个表单项的值
-  const setFieldValue = (name: string, value: any) => {
+  }, [fields])
+  
+  // 用于设置单个表单项的值 - 使用 useCallback 优化
+  const setFieldValue = useCallback((name: string, value: any) => {
     if(fields[name]) {
-    dispatch({ type: 'onValueUpdate', name: name, value })
-
+      dispatch({ type: 'onValueUpdate', name: name, value })
     }
-  }
-  // 用于重置表单的内容
-  const resetFields = () => {
+  }, [fields, dispatch])
+  
+  // 用于重置表单的内容 - 使用 useCallback 优化
+  const resetFields = useCallback(() => {
     if(initialValues) {
       each(initialValues,(value,name) => {
         if(fields[name]) {
@@ -102,7 +103,7 @@ function useStore(initialValues?: Record<string, any>) {
         }
       })
     }
-  }
+  }, [initialValues, fields, dispatch])
   
   // 将 CustomRule 转换为 RuleItem
   const transformRules = useCallback((rules: CustomRule[]) => {
@@ -116,8 +117,8 @@ function useStore(initialValues?: Record<string, any>) {
     })
   }, [getFieldValue])
 
-  // 用于单个表单验证
-  const validateField = async (name: string) => {
+  // 用于单个表单验证 - 使用 useCallback 优化
+  const validateField = useCallback(async (name: string) => {
     const { value, rules } = fields[name]
     const afterRules = transformRules(rules)
     // 创建描述对象
@@ -147,7 +148,7 @@ function useStore(initialValues?: Record<string, any>) {
       // console.log('验证结果 - isValid:', isValid, 'errors:', errors)
       dispatch({ type: 'updateValidateResult', name, value: { isValid, errors } })
     }
-  }
+  }, [fields, transformRules, dispatch])
   // 用于整个表单验证
   const validateAllFields = useCallback(async () => {
     // 开始验证，设置提交状态

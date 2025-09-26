@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import TabsItem from './tabsItem'
 import type { TabItemProps } from './tabsItem'
 
@@ -13,25 +13,28 @@ export interface TabsProps {
   style?: React.CSSProperties
 }
 
-const Tabs: React.FC<TabsProps> = (props) => {
+const Tabs: React.FC<TabsProps> = React.memo((props) => {
   const { className, defaultIndex = 0, onSelect, children, type = 'line', style } = props
 
-  //组件的样式
-  const classes = classNames('jasmine-tabs-nav', className, {
+  //组件的样式 - 使用 useMemo 优化
+  const classes = useMemo(() => classNames('jasmine-tabs-nav', className, {
     'nav-line': type === 'line',
     'nav-card': type === 'card',
-  })
+  }), [className, type])
+  
   const [currentActive, setActive] = useState(defaultIndex)
 
-  const handlerClick = (_e: React.MouseEvent, index: number, disabled: boolean) => {
+  // 使用 useCallback 缓存事件处理函数
+  const handlerClick = useCallback((_e: React.MouseEvent, index: number, disabled: boolean) => {
     if (disabled) return
     setActive(index) // 切换激活状态
     if (onSelect) {
       onSelect(index) // 触发外部回调，通知父组件
     }
-  }
+  }, [onSelect])
 
-  const renderNavLink = () => {
+  // 使用 useMemo 缓存导航链接渲染
+  const renderNavLink = useMemo(() => {
     return React.Children.map(children, (child, index) => {
       const childElement = child as React.ReactElement<TabItemProps, typeof TabsItem>
 
@@ -62,25 +65,28 @@ const Tabs: React.FC<TabsProps> = (props) => {
         return null
       }
     })
-  }
+  }, [children, currentActive, handlerClick])
 
-  const renderContent = () => {
+  // 使用 useMemo 缓存内容渲染
+  const renderContent = useMemo(() => {
     return React.Children.map(children, (child, index) => {
       if (index === currentActive) {
         return child
       }
     })
-  }
+  }, [children, currentActive])
 
   return (
     <div>
       <ul className={classes} style={style}>
-        {renderNavLink()}
+        {renderNavLink}
       </ul>
       {/* 渲染选中的 Tab 内容 */}
-      <div className="jasmine-tabs-content">{renderContent()}</div>
+      <div className="jasmine-tabs-content">{renderContent}</div>
     </div>
   )
-}
+})
+
+Tabs.displayName = 'Tabs'
 
 export default Tabs

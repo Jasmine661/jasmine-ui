@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import useStore from './useStore'
 import type { FormState } from './useStore'
 import type { ValidateError } from 'async-validator'
@@ -26,17 +26,20 @@ const useForm = ({ initialValues, onFinish, onFinishFailed }: UseFormProps = {})
   const { form, fields, dispatch, ...restProps } = useStore(initialValues)
   const { getFieldValue, getFieldsValue, setFieldValue, validateField, validateAllFields, isSubmitting } = restProps
 
+  // 使用 useCallback 缓存提交处理函数
   const submitForm = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     e.stopPropagation()
     await restProps.submitForm(onFinish, onFinishFailed)
   }, [restProps, onFinish, onFinishFailed])
 
+  // 使用 useCallback 缓存重置函数
   const resetFields = useCallback(() => {
     restProps.resetFields()
   }, [restProps])
 
-  return {
+  // 使用 useMemo 缓存返回值，减少不必要的重新创建
+  const returnValue = useMemo(() => ({
     form,
     fields,
     dispatch,
@@ -48,7 +51,21 @@ const useForm = ({ initialValues, onFinish, onFinishFailed }: UseFormProps = {})
     validateField,
     validateAllFields,
     isSubmitting,
-  }
+  }), [
+    form,
+    fields,
+    dispatch,
+    submitForm,
+    resetFields,
+    getFieldValue,
+    getFieldsValue,
+    setFieldValue,
+    validateField,
+    validateAllFields,
+    isSubmitting,
+  ])
+
+  return returnValue
 }
 
 export default useForm

@@ -19,7 +19,7 @@ export interface MenuProps {
   defaultOpenSubMenus?: string[]
 }
 
-const Menu: React.FC<MenuProps> = (props) => {
+const Menu: React.FC<MenuProps> = React.memo((props) => {
   // 接收的参数props
   const {
     className,
@@ -30,11 +30,12 @@ const Menu: React.FC<MenuProps> = (props) => {
     children,
     defaultOpenSubMenus = [],
   } = props
-  // 根据props生成className
-  const classes = classNames('jasmine-menu', className, {
+  
+  // 根据props生成className - 使用 useMemo 优化
+  const classes = useMemo(() => classNames('jasmine-menu', className, {
     'menu-vertical': mode === 'vertical',
     'menu-horizontal': mode !== 'vertical',
-  })
+  }), [className, mode])
   // 当前激活项的index
   const [currentActive, setActive] = useState(defaultIndex)
 
@@ -73,6 +74,8 @@ const Menu: React.FC<MenuProps> = (props) => {
       <MenuContext.Provider value={passedContext}>{renderChildren}</MenuContext.Provider>
     </ul>
   )
-}
+})
+
+Menu.displayName = 'Menu'
 
 export default Menu

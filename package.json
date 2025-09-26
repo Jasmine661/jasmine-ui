@@ -5,6 +5,7 @@
   "main": "dist/jasmine-ui.umd.js",
   "module": "dist/jasmine-ui.es.js",
   "types": "dist/types/index.d.ts",
+  "sideEffects": false,
   "files": [
     "dist",
     "eslint-config-jasmine-ui.js",

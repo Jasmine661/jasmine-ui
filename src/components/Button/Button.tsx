@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import classNames from 'classnames'
 
 /** 按钮尺寸类型 */
@@ -37,7 +37,7 @@ export type ButtonProps = Partial<NativeButtonProps & AnchorButtonProps>
  * Button 组件
  * 根据 btnType 判断渲染 button 或 a 标签
  */
-export const Button: React.FC<ButtonProps> = (props) => {
+export const Button: React.FC<ButtonProps> = React.memo((props) => {
   const {
     btnType = 'default',
     disabled = false,
@@ -48,11 +48,11 @@ export const Button: React.FC<ButtonProps> = (props) => {
     ...restProps
   } = props
 
-  const classes = classNames('btn', className, {
+  const classes = useMemo(() => classNames('btn', className, {
     [`btn-${btnType}`]: btnType,
     [`btn-${size}`]: size,
     disabled: btnType === 'link' && disabled,
-  })
+  }), [btnType, className, size, disabled])
 
   if (btnType === 'link' && href) {
     return (
@@ -67,6 +67,8 @@ export const Button: React.FC<ButtonProps> = (props) => {
       </button>
     )
   }
-}
+})
+
+Button.displayName = 'Button'
 
 export default Button

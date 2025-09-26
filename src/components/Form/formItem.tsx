@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useMemo, useCallback } from 'react'
 import type { FC, ReactNode } from 'react'
 import { FormContext } from './formContext'
 import type { CustomRule } from './useStore'
@@ -34,7 +34,7 @@ export interface FormItemProps {
   getValueFromEvent?: (event: any) => any
 }
 
-const FormItem: FC<FormItemProps> = (props) => {
+const FormItem: FC<FormItemProps> = React.memo((props) => {
   const {
     children,
     label,
@@ -46,61 +46,80 @@ const FormItem: FC<FormItemProps> = (props) => {
     validateTrigger = 'onBlur',
     getValueFromEvent = (e: any) => e.target.value,
   } = props as SomeRequired<FormItemProps, 'valuePropName' | 'trigger' | 'getValueFromEvent'>
-  const rowClass = classNames('jasmine-row', {
-    'jasmine-row-no-label': !label,
-  })
+  
   const { dispatch, fields, validateField, initialValues } = useContext(FormContext)
   const fieldState = fields[name]
+  
+  // 使用 useMemo 缓存计算结果
+  const rowClass = useMemo(() => classNames('jasmine-row', {
+    'jasmine-row-no-label': !label,
+  }), [label])
+  
   // fieldState可能是undefined，React的受控组件要求value必须是确定的值
   const value = fieldState?.value ?? initialValues?.[name] ?? getDefaultValue(valuePropName)
   const errors = fieldState?.errors || []
   
-  // 计算状态 - 提高可读性和性能
-  // 优先使用 required 属性，如果没有则从 rules 中推断
-  const isRequired = required ?? rules?.some(rule => 
-    (typeof rule !== 'function') && rule.required
-  ) ?? false
-  const hasError = errors.length > 0
+  // 使用 useMemo 缓存状态计算
+  const isRequired = useMemo(() => 
+    required ?? rules?.some(rule => 
+      (typeof rule !== 'function') && rule.required
+    ) ?? false, 
+    [required, rules]
+  )
+  
+  const hasError = useMemo(() => errors.length > 0, [errors.length])
 
-  const onValueUpdate = (e: any) => {
+  // 使用 useCallback 缓存事件处理函数
+  const onValueUpdate = useCallback((e: any) => {
     const value = getValueFromEvent(e)
     // console.log('new value', value)
     dispatch({ type: 'onValueUpdate', name, value })
-  }
+  }, [getValueFromEvent, dispatch, name])
 
-  const onValueValidate = async () => {
+  const onValueValidate = useCallback(async () => {
     await validateField(name)
-  }
-  // 1 手动的创建一个属性列表，需要有 value 以及 onChange 属性
-  const controlProps: Record<string, any> = {}
-  controlProps[valuePropName] = value
-  controlProps[trigger] = onValueUpdate
-  if (rules) {
-    controlProps[validateTrigger] = onValueValidate
-  }
-  // 2 获取 children 数组的第一个元素
-  const childList = React.Children.toArray(children)
-  // 没有子组件
-  if (childList.length === 0) {
-    console.error('No child element found in Form.Item, please provide one form component')
-  }
-  // 子组件大于一个
-  if (childList.length > 1) {
-    console.warn('Only support one child element in Form.Item, others will be omitted')
-  }
-  // 不是 ReactElement 的子组件
-  if (!React.isValidElement(childList[0])) {
-    console.error('Child component is not a valid React Element')
-  }
-  const child = childList[0]
-  // 3 cloneElement，混合这个child 以及 手动的属性列表（仅处理 ReactElement）
-  const returnChildNode = React.isValidElement(child)
-    ? React.cloneElement(child as React.ReactElement, controlProps)
-    : child
+  }, [validateField, name])
+  // 使用 useMemo 缓存 controlProps 对象
+  const controlProps = useMemo(() => {
+    const props: Record<string, any> = {}
+    props[valuePropName] = value
+    props[trigger] = onValueUpdate
+    if (rules.length > 0) {
+      props[validateTrigger] = onValueValidate
+    }
+    return props
+  }, [valuePropName, value, trigger, onValueUpdate, rules.length, validateTrigger, onValueValidate])
+  
+  // 使用 useMemo 缓存子组件处理逻辑
+  const returnChildNode = useMemo(() => {
+    // 2 获取 children 数组的第一个元素
+    const childList = React.Children.toArray(children)
+    // 没有子组件
+    if (childList.length === 0) {
+      console.error('No child element found in Form.Item, please provide one form component')
+      return null
+    }
+    // 子组件大于一个
+    if (childList.length > 1) {
+      console.warn('Only support one child element in Form.Item, others will be omitted')
+    }
+    // 不是 ReactElement 的子组件
+    if (!React.isValidElement(childList[0])) {
+      console.error('Child component is not a valid React Element')
+      return childList[0]
+    }
+    const child = childList[0]
+    // 3 cloneElement，混合这个child 以及 手动的属性列表（仅处理 ReactElement）
+    return React.isValidElement(child)
+      ? React.cloneElement(child as React.ReactElement, controlProps)
+      : child
+  }, [children, controlProps])
 
+  // 优化 useEffect 依赖数组，避免不必要的重新执行
+  const currentField = fields[name]
   useEffect(() => {
     // 之前没有检查这个name，导致dispatch会更新fields，导致useEffect陷入死循环
-    if (!fields[name]) {
+    if (!currentField) {
       const initialValue = initialValues?.[name] ?? getDefaultValue(valuePropName)
       dispatch({
         type: 'addField',
@@ -115,7 +134,7 @@ const FormItem: FC<FormItemProps> = (props) => {
         },
       })
     }
-  }, [dispatch, label, name, valuePropName, rules, initialValues, fields])
+  }, [dispatch, label, name, valuePropName, rules, initialValues, currentField])
   
   return (
     <div className={rowClass}>
@@ -149,6 +168,8 @@ const FormItem: FC<FormItemProps> = (props) => {
       </div>
     </div>
   )
-}
+})
+
+FormItem.displayName = 'FormItem'
 
 export default FormItem

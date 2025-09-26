@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useMemo } from 'react'
+import React, { useContext, useState, useRef, useMemo, useCallback } from 'react'
 import classNames from 'classnames'
 import MenuContext from './menuContext'
 import type { MenuItemProps } from './menuItem'
@@ -14,17 +14,19 @@ export interface SubMenuProps {
   style?: React.CSSProperties
 }
 
-const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) => {
+const SubMenu: React.FC<SubMenuProps> = React.memo(({ index, title, className, children }) => {
   const context = useContext(MenuContext)
   const openedSubMenus = context.defaultOpenSubMenus as string[]
   const [isOpen, setIsOpen] = useState(
     index && context.mode === 'vertical' ? openedSubMenus.includes(index) : false
   )
-  const classes = classNames('submenu-item menu-item', className, {
+  
+  // 使用 useMemo 缓存样式计算
+  const classes = useMemo(() => classNames('submenu-item menu-item', className, {
     'is-active': context.index === index,
     'is-vertical': context.mode === 'vertical',
     'is-opened': isOpen,
-  })
+  }), [className, context.index, context.mode, index, isOpen])
 
   const timer = useRef<any>(null)
 
@@ -55,28 +57,35 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
     )
   },[children, index, isOpen])
 
-  const handlerClick = (e: React.MouseEvent) => {
+  // 使用 useCallback 缓存事件处理函数
+  const handlerClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault()
     setIsOpen(!isOpen)
-  }
+  }, [isOpen])
 
-  const handlerMouse = (e: React.MouseEvent, toggle: boolean) => {
+  const handlerMouse = useCallback((e: React.MouseEvent, toggle: boolean) => {
     if (timer.current) clearTimeout(timer.current)
     e.preventDefault()
     timer.current = setTimeout(() => {
       setIsOpen(toggle)
     }, 200)
-  }
+  }, [])
 
-  const clickEvents = context.mode === 'vertical' ? { onClick: handlerClick } : {}
+  // 使用 useMemo 缓存事件对象
+  const clickEvents = useMemo(() => 
+    context.mode === 'vertical' ? { onClick: handlerClick } : {}, 
+    [context.mode, handlerClick]
+  )
 
-  const hoverEvents =
+  const hoverEvents = useMemo(() =>
     context.mode === 'horizontal'
       ? {
           onMouseEnter: (e: React.MouseEvent) => handlerMouse(e, true),
           onMouseLeave: (e: React.MouseEvent) => handlerMouse(e, false),
         }
-      : {}
+      : {},
+    [context.mode, handlerMouse]
+  )
 
   return (
     <li key={index} className={classes} ref={subMenuRef} {...hoverEvents}>
@@ -87,7 +96,7 @@ const SubMenu: React.FC<SubMenuProps> = ({ index, title, className, children }) 
       {renderChildren}
     </li>
   )
-}
+})
 
 SubMenu.displayName = 'SubMenu'
 export default SubMenu

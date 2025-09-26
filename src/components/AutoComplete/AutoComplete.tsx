@@ -3,6 +3,7 @@ import {
   useRef,
   useState,
   useCallback,
+  useMemo,
   type ChangeEvent,
   type KeyboardEvent,
   type ReactElement,
@@ -73,16 +74,35 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
     }
   }, [debouncedValue, fetchSuggestions]) // 注意：所有在useEffect内部使用的变量都应该包含在依赖数组中
 
-  // 高亮选中项
-  const highlight = (index: number) => {
+  // 高亮选中项 - 使用 useCallback 优化
+  const highlight = useCallback((index: number) => {
     if (suggestions.length === 0) return
     if (index < 0) index = suggestions.length - 1
     if (index >= suggestions.length) index = 0
     setHighlightedIndex(index)
-  }
+  }, [suggestions.length])
 
-  // 键盘上/下/enter/esc控制选择
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleChange = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim()
+    setInputValue(value)
+    triggerSearch.current = true
+  }, [])
+
+  const handleExited = useCallback(() => {
+    setSuggestions([])
+  }, [])
+
+  const handleSelect = useCallback((item: DataSourceType<T>) => {
+    setInputValue(item.value)
+    setSuggestions([])
+    setShowDropdown(false)
+
+    onSelect?.(item)
+    triggerSearch.current = false
+  }, [onSelect])
+
+  // 键盘上/下/enter/esc控制选择 - 使用 useCallback 优化
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
       case 'ArrowDown':
         // 向下选择
@@ -106,34 +126,29 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
       default:
         break
     }
-  }
+  }, [highlight, highlightedIndex, suggestions, handleSelect])
 
-  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim()
-    setInputValue(value)
-    triggerSearch.current = true
-  }
-
-  const handleExited = useCallback(() => {
-    setSuggestions([])
-  }, [])
-
-  const handleSelect = (item: DataSourceType<T>) => {
-    setInputValue(item.value)
-    setSuggestions([])
-    setShowDropdown(false)
-
-    onSelect?.(item)
-    triggerSearch.current = false
-  }
-
-  // 根据用户自定义函数渲染内容
-  const renderTemplate = (item: DataSourceType<T>) => {
+  // 根据用户自定义函数渲染内容 - 使用 useCallback 优化
+  const renderTemplate = useCallback((item: DataSourceType<T>) => {
     return renderOption ? renderOption(item) : item.value
-  }
+  }, [renderOption])
 
-  // 搜索返回列表
-  const generateDropdown = () => {
+  // 使用 useMemo 缓存列表项渲染
+  const suggestionItems = useMemo(() => {
+    return suggestions.map((item, index) => {
+      const cname = classNames('suggestion-item', {
+        'is-active': highlightedIndex === index,
+      })
+      return (
+        <li key={index} className={cname} onClick={() => handleSelect(item)}>
+          {renderTemplate(item)}
+        </li>
+      )
+    })
+  }, [suggestions, highlightedIndex, handleSelect, renderTemplate])
+
+  // 搜索返回列表 - 使用 useMemo 优化
+  const generateDropdown = useMemo(() => {
     return (
       <Transition
         in={showDropdown || loading}
@@ -147,25 +162,16 @@ const AutoComplete = <T extends Record<string, unknown> = Record<string, unknown
               <Icon icon="spinner" spin />
             </div>
           )}
-          {suggestions.map((item, index) => {
-            const cname = classNames('suggestion-item', {
-              'is-active': highlightedIndex === index,
-            })
-            return (
-              <li key={index} className={cname} onClick={() => handleSelect(item)}>
-                {renderTemplate(item)}
-              </li>
-            )
-          })}
+          {suggestionItems}
         </ul>
       </Transition>
     )
-  }
+  }, [showDropdown, loading, handleExited, suggestionItems])
 
   return (
     <div className="jasmine-auto-complete" ref={componentRef}>
       <Input {...restProps} value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} />
-      {generateDropdown()}
+      {generateDropdown}
     </div>
   )
 }
