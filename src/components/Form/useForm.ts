@@ -1,3 +1,4 @@
+// 用于暴露给用户使用的 useForm Hook
 import { useCallback, useMemo } from 'react'
 import useStore from './useStore'
 import type { FormState } from './useStore'
@@ -18,52 +19,70 @@ export interface UseFormReturn {
   getFieldsValue: () => Record<string, any>
   setFieldValue: (name: string, value: any) => void
   validateField: (name: string) => Promise<void>
-  validateAllFields: () => Promise<{ isValid: boolean; errors: Record<string, ValidateError[]>; values: Record<string, any> }>
+  validateAllFields: () => Promise<{
+    isValid: boolean
+    errors: Record<string, ValidateError[]>
+    values: Record<string, any>
+  }>
   isSubmitting: boolean
 }
 
-const useForm = ({ initialValues, onFinish, onFinishFailed }: UseFormProps = {}): UseFormReturn & { dispatch: any } => {
+const useForm = ({ initialValues, onFinish, onFinishFailed }: UseFormProps = {}): UseFormReturn & {
+  dispatch: any
+} => {
   const { form, fields, dispatch, ...restProps } = useStore(initialValues)
-  const { getFieldValue, getFieldsValue, setFieldValue, validateField, validateAllFields, isSubmitting } = restProps
+  const {
+    getFieldValue,
+    getFieldsValue,
+    setFieldValue,
+    validateField,
+    validateAllFields,
+    isSubmitting,
+  } = restProps
 
-  // 使用 useCallback 缓存提交处理函数
-  const submitForm = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    await restProps.submitForm(onFinish, onFinishFailed)
-  }, [restProps, onFinish, onFinishFailed])
+  // 绑定事件对象，防止默认提交行为
+  const submitForm = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+      await restProps.submitForm(onFinish, onFinishFailed)
+    },
+    [restProps, onFinish, onFinishFailed]
+  )
 
-  // 使用 useCallback 缓存重置函数
   const resetFields = useCallback(() => {
     restProps.resetFields()
   }, [restProps])
 
-  // 使用 useMemo 缓存返回值，减少不必要的重新创建
-  const returnValue = useMemo(() => ({
-    form,
-    fields,
-    dispatch,
-    submitForm,
-    resetFields,
-    getFieldValue,
-    getFieldsValue,
-    setFieldValue,
-    validateField,
-    validateAllFields,
-    isSubmitting,
-  }), [
-    form,
-    fields,
-    dispatch,
-    submitForm,
-    resetFields,
-    getFieldValue,
-    getFieldsValue,
-    setFieldValue,
-    validateField,
-    validateAllFields,
-    isSubmitting,
-  ])
+  // 将返回值优化，避免不必要的渲染
+  const returnValue = useMemo(
+    () => ({
+      form,
+      fields,
+      dispatch,
+      submitForm,
+      resetFields,
+      getFieldValue,
+      getFieldsValue,
+      setFieldValue,
+      validateField,
+      validateAllFields,
+      isSubmitting,
+    }),
+    [
+      form,
+      fields,
+      dispatch,
+      submitForm,
+      resetFields,
+      getFieldValue,
+      getFieldsValue,
+      setFieldValue,
+      validateField,
+      validateAllFields,
+      isSubmitting,
+    ]
+  )
 
   return returnValue
 }

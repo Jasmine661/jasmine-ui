@@ -1,0 +1,74 @@
+[
+    {
+        "name": "Button",
+        "path": "./components/Button",
+        "category": "通用",
+        "description": "这是一个按钮组件"
+    },
+    {
+        "name": "Alert",
+        "path": "./components/Alert",
+        "category": "反馈",
+        "description": "这是一个警告组件"
+    },
+    {
+        "name": "Input",
+        "path": "./components/Input",
+        "category": "数据录入",
+        "description": "这是一个输入组件"
+    },
+    {
+        "name": "Menu",
+        "path": "./components/Menu",
+        "category": "导航",
+        "description": "这是一个菜单组件"
+    },
+    {
+        "name": "Tabs",
+        "path": "./components/Tabs",
+        "category": "导航",
+        "description": "这是一个标签页组件"
+    },
+    {
+        "name": "Transition",
+        "path": "./components/Transition",
+        "category": "其他",
+        "description": "这是一个过渡组件"
+    },
+    {
+        "name": "Upload",
+        "path": "./components/Upload",
+        "category": "数据录入",
+        "description": "这是一个上传组件"
+    },
+    {
+        "name": "Welcome",
+        "path": "./components/Welcome",
+        "category": "其他",
+        "description": "这是一个欢迎组件"
+    },
+    {
+        "name": "Icon",
+        "path": "./components/Icons",
+        "category": "通用",
+        "description": "这是一个图标组件"
+    },
+    {
+        "name": "Progress",
+        "path": "./components/Progress",
+        "category": "其他",
+        "description": "这是一个进度条组件"
+    },
+    {
+        "name": "AutoComplete",
+        "path": "./components/AutoComplete",
+        "category": "数据录入",
+        "description": "这是一个自动完成组件"
+    },
+    {
+        "name": "Form",
+        "path": "./components/Form",
+        "category": "数据录入",
+        "description": "这是一个表单组件"
+    }
+]

@@ -4,13 +4,20 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 import { fileURLToPath } from 'node:url'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
+import { visualizer } from 'rollup-plugin-visualizer'
 import path from 'node:path'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    visualizer({
+      open: true,
+      filename: 'stats.html'
+    }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(dirname, 'src'),
@@ -26,7 +33,17 @@ export default defineConfig({
     },
     // 外部化依赖
     rollupOptions: {
-      external: ['react', 'react-dom'],
+      external: [
+        'react', 
+        'react-dom',
+        'lodash-es',
+        '@fortawesome/fontawesome-svg-core',
+        '@fortawesome/free-solid-svg-icons',
+        '@fortawesome/react-fontawesome',
+        'axios',
+        'async-validator',
+        'react/jsx-runtime'
+      ],
       output: {
         globals: {
           react: 'React',

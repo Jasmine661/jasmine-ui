@@ -17,13 +17,17 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size
 
 const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const { size, append, prepend, disabled, icon, style, ...restProps } = props
-  
+
   // 根据属性计算className - 使用 useMemo 优化
-  const className = useMemo(() => classNames('jasmine-input-wrapper', size && `input-size-${size}`, {
-    'is-disabled': disabled,
-    'input-group-append': !!append, // 双重取反，有值则为true，无值为false
-    'input-group-prepend': !!prepend,
-  }), [size, disabled, append, prepend])
+  const className = useMemo(
+    () =>
+      classNames('jasmine-input-wrapper', size && `input-size-${size}`, {
+        'is-disabled': disabled,
+        'input-group-append': !!append, // 双重取反，有值则为true，无值为false
+        'input-group-prepend': !!prepend,
+      }),
+    [size, disabled, append, prepend]
+  )
 
   // 设置受控组件相关
   const fixControlledValue = (value: any) => {
@@ -45,10 +49,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           <Icon icon={icon} title={`title-${icon}`} />
         </div>
       )}
+
       <input ref={ref} className="jasmine-input-inner" disabled={disabled} {...restProps} />
+
       {append && <div className="jasmine-input-group-append">{append}</div>}
     </div>
   )
 })
 
-export default Input
+export default React.memo(Input)

@@ -37,60 +37,64 @@ export interface FormItemProps {
 const FormItem: FC<FormItemProps> = React.memo((props) => {
   const {
     children,
-    label,
-    required,
-    name,
+    label, // 前缀
+    required, // 是否必填
+    name, // 字段名
     valuePropName = 'value',
     trigger = 'onChange',
     rules = [],
     validateTrigger = 'onBlur',
     getValueFromEvent = (e: any) => e.target.value,
   } = props as SomeRequired<FormItemProps, 'valuePropName' | 'trigger' | 'getValueFromEvent'>
-  
+
   const { dispatch, fields, validateField, initialValues } = useContext(FormContext)
   const fieldState = fields[name]
-  
-  // 使用 useMemo 缓存计算结果
-  const rowClass = useMemo(() => classNames('jasmine-row', {
-    'jasmine-row-no-label': !label,
-  }), [label])
-  
+
+  const rowClass = useMemo(
+    () =>
+      classNames('jasmine-row', {
+        'jasmine-row-no-label': !label,
+      }),
+    [label]
+  )
+
   // fieldState可能是undefined，React的受控组件要求value必须是确定的值
   const value = fieldState?.value ?? initialValues?.[name] ?? getDefaultValue(valuePropName)
   const errors = fieldState?.errors || []
-  
-  // 使用 useMemo 缓存状态计算
-  const isRequired = useMemo(() => 
-    required ?? rules?.some(rule => 
-      (typeof rule !== 'function') && rule.required
-    ) ?? false, 
+
+  const isRequired = useMemo(
+    () => required ?? rules?.some((rule) => typeof rule !== 'function' && rule.required) ?? false,
     [required, rules]
   )
-  
+
   const hasError = useMemo(() => errors.length > 0, [errors.length])
 
-  // 使用 useCallback 缓存事件处理函数
-  const onValueUpdate = useCallback((e: any) => {
-    const value = getValueFromEvent(e)
-    // console.log('new value', value)
-    dispatch({ type: 'onValueUpdate', name, value })
-  }, [getValueFromEvent, dispatch, name])
+  // 表单项值更新的回调，将状态更新为OnValueUpdate
+  const onValueUpdate = useCallback(
+    (e: any) => {
+      const value = getValueFromEvent(e)
+      // console.log('new value', value)
+      dispatch({ type: 'onValueUpdate', name, value })
+    },
+    [getValueFromEvent, dispatch, name]
+  )
 
   const onValueValidate = useCallback(async () => {
     await validateField(name)
   }, [validateField, name])
-  // 使用 useMemo 缓存 controlProps 对象
+
+  // 传递给 item子组件 的 props
   const controlProps = useMemo(() => {
     const props: Record<string, any> = {}
-    props[valuePropName] = value
-    props[trigger] = onValueUpdate
+    props[valuePropName] = value // 绑定value属性
+    props[trigger] = onValueUpdate // 事件绑定，比如input的onChange
     if (rules.length > 0) {
-      props[validateTrigger] = onValueValidate
+      props[validateTrigger] = onValueValidate // 表单验证事件绑定
     }
     return props
   }, [valuePropName, value, trigger, onValueUpdate, rules.length, validateTrigger, onValueValidate])
-  
-  // 使用 useMemo 缓存子组件处理逻辑
+
+  // 验证Form.Item的子组件是否合法，以及克隆子组件，注入 controlProps
   const returnChildNode = useMemo(() => {
     // 2 获取 children 数组的第一个元素
     const childList = React.Children.toArray(children)
@@ -121,6 +125,7 @@ const FormItem: FC<FormItemProps> = React.memo((props) => {
     // 之前没有检查这个name，导致dispatch会更新fields，导致useEffect陷入死循环
     if (!currentField) {
       const initialValue = initialValues?.[name] ?? getDefaultValue(valuePropName)
+      // 将FormItem状态设置为初始状态
       dispatch({
         type: 'addField',
         name,
@@ -135,15 +140,16 @@ const FormItem: FC<FormItemProps> = React.memo((props) => {
       })
     }
   }, [dispatch, label, name, valuePropName, rules, initialValues, currentField])
-  
+
   return (
     <div className={rowClass}>
+      {/* 表单前缀 */}
       {label && (
         <div className="jasmine-form-item-label">
-          <label 
-            title={label} 
+          <label
+            title={label}
             className={classNames({
-              'jasmine-form-item-required': isRequired
+              'jasmine-form-item-required': isRequired,
             })}
           >
             {label}
@@ -151,11 +157,14 @@ const FormItem: FC<FormItemProps> = React.memo((props) => {
         </div>
       )}
       <div className="jasmine-form-item">
-        <div className={classNames('jasmine-form-item-control', {
-          'jasmine-form-item-has-error': hasError
-        })}>
+        <div
+          className={classNames('jasmine-form-item-control', {
+            'jasmine-form-item-has-error': hasError,
+          })}
+        >
           {returnChildNode}
         </div>
+        {/* 表单验证失败显示的文字 */}
         {hasError && (
           <div className="jasmine-form-item-explain">
             {errors.map((error, index) => (

@@ -1,10 +1,15 @@
+// 数据管理的主逻辑，包括表单状态的管理、验证逻辑、提交逻辑的实现
 import { useState, useReducer, useCallback } from 'react'
 import Schema from 'async-validator'
 import type { RuleItem, ValidateError } from 'async-validator'
 import { each, mapValues } from 'lodash-es'
 
 // 以支持系统定义函数的表单验证
-export type CustomRuleFunction = ({ getFieldValue }: { getFieldValue: (name: string) => any }) => RuleItem
+export type CustomRuleFunction = ({
+  getFieldValue,
+}: {
+  getFieldValue: (name: string) => any
+}) => RuleItem
 export type CustomRule = RuleItem | CustomRuleFunction
 
 // 表单组件的核心状态管理对象，用来储存每个表单字段的详细信息
@@ -76,96 +81,111 @@ function fieldsReducer(state: FieldState, action: FieldAction): FieldState {
 }
 
 function useStore(initialValues?: Record<string, any>) {
-  const [form, setForm] = useState<FormState>({ isValid: true,isSubmitting: false,errors:{} })
+  const [form, setForm] = useState<FormState>({ isValid: true, isSubmitting: false, errors: {} })
+  // fields: 存储 FormItem 状态的对象
   const [fields, dispatch] = useReducer(fieldsReducer, {})
+
   // 用于获取单个表单项的值
-  const getFieldValue = useCallback((key: string) => {
-    return fields[key]?.value
-  }, [fields])
-  // 用于获取所有表单项的值 {'username': 'jasmine','password': '123456'} - 使用 useCallback 优化
+  const getFieldValue = useCallback(
+    (key: string) => {
+      return fields[key]?.value
+    },
+    [fields]
+  )
+
+  // 用于获取所有表单项的值 {'username': 'jasmine','password': '123456'}
   const getFieldsValue = useCallback(() => {
-    return mapValues(fields, field => field.value)
+    return mapValues(fields, (field) => field.value)
   }, [fields])
-  
-  // 用于设置单个表单项的值 - 使用 useCallback 优化
-  const setFieldValue = useCallback((name: string, value: any) => {
-    if(fields[name]) {
-      dispatch({ type: 'onValueUpdate', name: name, value })
-    }
-  }, [fields, dispatch])
-  
-  // 用于重置表单的内容 - 使用 useCallback 优化
+
+  // 用于设置单个表单项的值
+  const setFieldValue = useCallback(
+    (name: string, value: any) => {
+      if (fields[name]) {
+        dispatch({ type: 'onValueUpdate', name: name, value })
+      }
+    },
+    [fields, dispatch]
+  )
+
+  // 用于重置表单的内容
   const resetFields = useCallback(() => {
-    if(initialValues) {
-      each(initialValues,(value,name) => {
-        if(fields[name]) {
+    if (initialValues) {
+      each(initialValues, (value, name) => {
+        if (fields[name]) {
           dispatch({ type: 'onValueUpdate', name, value })
         }
       })
     }
   }, [initialValues, fields, dispatch])
-  
-  // 将 CustomRule 转换为 RuleItem
-  const transformRules = useCallback((rules: CustomRule[]) => {
-    return rules.map(rule => {
-      if(typeof rule === 'function') {
-        const calledRule = rule({getFieldValue})
-        return calledRule
-      } else {
-        return rule
-      }
-    })
-  }, [getFieldValue])
 
-  // 用于单个表单验证 - 使用 useCallback 优化
-  const validateField = useCallback(async (name: string) => {
-    const { value, rules } = fields[name]
-    const afterRules = transformRules(rules)
-    // 创建描述对象
-    const descriptor = {
-      [name]: afterRules,
-    }
-    // 创建值对象
-    const valueMap = {
-      [name]: value,
-    }
-    // 创建验证器
-    const validator = new Schema(descriptor)
-    let isValid = true
-    let errors: ValidateError[] = []
-    try {
-      // 验证
-      await validator.validate(valueMap)
-    } catch (e) {
-      isValid = false
-      const err = e as any
-      // console.log('验证错误详情:', err)
-      // console.log('错误信息:', err.errors)
-      // console.log('字段信息:', err.fields)
-      // async-validator 的错误结构是 err.errors
-      errors = err.errors || []
-    } finally {
-      // console.log('验证结果 - isValid:', isValid, 'errors:', errors)
-      dispatch({ type: 'updateValidateResult', name, value: { isValid, errors } })
-    }
-  }, [fields, transformRules, dispatch])
+  // 将 CustomRule 转换为 RuleItem
+  const transformRules = useCallback(
+    (rules: CustomRule[]) => {
+      return rules.map((rule) => {
+        if (typeof rule === 'function') {
+          const calledRule = rule({ getFieldValue })
+          return calledRule
+        } else {
+          return rule
+        }
+      })
+    },
+    [getFieldValue]
+  )
+
+  // 用于单个表单验证
+  const validateField = useCallback(
+    async (name: string) => {
+      const { value, rules } = fields[name]
+      const afterRules = transformRules(rules)
+      // 创建描述对象
+      const descriptor = {
+        [name]: afterRules,
+      }
+      // 创建值对象
+      const valueMap = {
+        [name]: value,
+      }
+      // 创建验证器
+      const validator = new Schema(descriptor)
+      let isValid = true
+      let errors: ValidateError[] = []
+      try {
+        // 验证
+        await validator.validate(valueMap)
+      } catch (e) {
+        isValid = false
+        const err = e as any
+        // console.log('验证错误详情:', err)
+        // console.log('错误信息:', err.errors)
+        // console.log('字段信息:', err.fields)
+        // async-validator 的错误结构是 err.errors
+        errors = err.errors || []
+      } finally {
+        // console.log('验证结果 - isValid:', isValid, 'errors:', errors)
+        dispatch({ type: 'updateValidateResult', name, value: { isValid, errors } })
+      }
+    },
+    [fields, transformRules, dispatch]
+  )
   // 用于整个表单验证
   const validateAllFields = useCallback(async () => {
     // 开始验证，设置提交状态
-    setForm(prev => ({ ...prev, isSubmitting: true }))
-    
+    setForm((prev) => ({ ...prev, isSubmitting: true }))
+
     let isValid = true
     let errors: Record<string, ValidateError[]> = {}
-    
+
     // 构建所有字段的值映射
-    const valueMap = mapValues(fields, field => field.value)
-    
+    const valueMap = mapValues(fields, (field) => field.value)
+
     // 构建所有字段的验证描述符
-    const descriptor = mapValues(fields, field => transformRules(field.rules))
-    
+    const descriptor = mapValues(fields, (field) => transformRules(field.rules))
+
     // 创建验证器并执行验证
     const validator = new Schema(descriptor)
-    
+
     try {
       await validator.validate(valueMap)
     } catch (e) {
@@ -173,42 +193,50 @@ function useStore(initialValues?: Record<string, any>) {
       const err = e as ValidateErrorType
       errors = err.fields || {}
     }
-    
+
     // 更新所有字段的验证状态
     each(fields, (value, name) => {
       if (errors[name]) {
         const itemErrors = errors[name]
-        dispatch({ type: 'updateValidateResult', name, value: { isValid: false, errors: itemErrors } })
+        dispatch({
+          type: 'updateValidateResult',
+          name,
+          value: { isValid: false, errors: itemErrors },
+        })
       } else if (value.rules.length > 0 && !errors[name]) {
         dispatch({ type: 'updateValidateResult', name, value: { isValid: true, errors: [] } })
       }
     })
-    
+
     // 验证完成，设置提交状态为 false
-    setForm(prev => ({ ...prev, isSubmitting: false, isValid, errors }))
+    setForm((prev) => ({ ...prev, isSubmitting: false, isValid, errors }))
     return { isValid, errors, values: valueMap }
-    
   }, [fields, transformRules, dispatch])
 
   // submit提交优化
   const [isSubmitting, setIsSubmitting] = useState(false)
   const submitForm = useCallback(
     async (
-      onFinish?: (values: Record<string, any>) => void, 
-      onFinishFailed?: (values: Record<string, any>, errors: Record<string, ValidateError[]>) => void
+      onFinish?: (values: Record<string, any>) => void,
+      onFinishFailed?: (
+        values: Record<string, any>,
+        errors: Record<string, ValidateError[]>
+      ) => void
     ) => {
-    setIsSubmitting(true)  // 开始提交
-    try {
-      const { isValid, errors, values } = await validateAllFields()
-      if (isValid) {
-        onFinish?.(values)
-      } else {
-        onFinishFailed?.(values, errors)
+      setIsSubmitting(true) // 开始提交
+      try {
+        const { isValid, errors, values } = await validateAllFields()
+        if (isValid) {
+          onFinish?.(values)
+        } else {
+          onFinishFailed?.(values, errors)
+        }
+      } finally {
+        setIsSubmitting(false) // 无论成功失败都结束提交状态
       }
-    } finally {
-      setIsSubmitting(false)  // 无论成功失败都结束提交状态
-    }
-  }, [validateAllFields])
+    },
+    [validateAllFields]
+  )
 
   return {
     fields,

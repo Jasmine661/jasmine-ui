@@ -8,7 +8,7 @@ export type IFormComponent = FC<FormProps> & {
   Item: FC<FormItemProps>
 }
 
-const TransForm = Form as IFormComponent
+const TransForm = Form as unknown as IFormComponent
 TransForm.Item = FormItem
 
 export default TransForm

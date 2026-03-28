@@ -8,70 +8,75 @@ import type { ValidateError } from 'async-validator'
 
 export type RenderProps = (form: FormState) => ReactNode
 
-export type IFormRef = Omit<ReturnType<typeof useForm>, 'fields' | 'form' >
+export type IFormRef = Omit<ReturnType<typeof useForm>, 'fields' | 'form'>
 
 export interface FormProps {
   children?: ReactNode | RenderProps
   name?: string
   initialValues?: Record<string, any>
-  onFinish?: (values: Record<string,any>) => void
-  onFinishFailed?: (values: Record<string,any>,errors: Record<string,ValidateError[]>) => void
+  onFinish?: (values: Record<string, any>) => void
+  onFinishFailed?: (values: Record<string, any>, errors: Record<string, ValidateError[]>) => void
 }
 
 const Form = forwardRef<IFormRef, FormProps>((props, ref) => {
   const { children, name, initialValues, onFinish, onFinishFailed } = props
-  
-  // 使用 useMemo 缓存 useForm 的配置
-  const formConfig = useMemo(() => ({
-    initialValues,
-    onFinish,
-    onFinishFailed
-  }), [initialValues, onFinish, onFinishFailed])
-  
+
+  const formConfig = useMemo(
+    () => ({
+      initialValues, // 表单初始值
+      onFinish, // 表单验证成功的回调函数
+      onFinishFailed, // 表单验证失败的回调函数
+    }),
+    [initialValues, onFinish, onFinishFailed]
+  )
+
   const formData = useForm(formConfig)
   const { form, fields, dispatch, submitForm, validateField } = formData
-  
-  useImperativeHandle(ref, useCallback(() => {
-    return {
-      ...formData,
-      // 排除不需要暴露的属性
-      form: undefined,
-      fields: undefined
-    }
-  }, [formData]))
 
-  // 使用 useMemo 缓存 Context 值，减少子组件重新渲染
-  const passedContext = useMemo(() => ({
-    dispatch,
-    fields, 
-    initialValues, 
-    validateField
-  }), [dispatch, fields, initialValues, validateField])
+  useImperativeHandle(
+    ref,
+    useCallback(() => {
+      return {
+        ...formData,
+        // 排除不需要暴露的属性
+        form: undefined,
+        fields: undefined,
+      }
+    }, [formData])
+  )
 
-  // 使用 useMemo 缓存表单样式类名
+  const passedContext = useMemo(
+    () => ({
+      dispatch,
+      fields,
+      initialValues,
+      validateField,
+    }),
+    [dispatch, fields, initialValues, validateField]
+  )
+
   const formClassName = useMemo(() => 'jasmine-form', [])
 
-  // 使用 useMemo 缓存子组件渲染
   const childrenNode = useMemo(() => {
-    if(typeof children === 'function') {
+    if (typeof children === 'function') {
       return children(form)
     }
     return children
   }, [children, form])
 
-  // 使用 useMemo 缓存表单属性
-  const formProps = useMemo(() => ({
-    name,
-    className: formClassName,
-    onSubmit: submitForm,
-    'data-testid': 'form'
-  }), [name, formClassName, submitForm])
+  const formProps = useMemo(
+    () => ({
+      name,
+      className: formClassName,
+      onSubmit: submitForm,
+      'data-testid': 'form',
+    }),
+    [name, formClassName, submitForm]
+  )
 
   return (
     <form {...formProps}>
-      <FormContext.Provider value={passedContext}>
-        {childrenNode}
-      </FormContext.Provider>
+      <FormContext.Provider value={passedContext}>{childrenNode}</FormContext.Provider>
     </form>
   )
 })
